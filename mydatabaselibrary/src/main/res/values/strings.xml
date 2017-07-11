@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Database Library</string>
+    <string name="already_exists">Value already exists</string>
+</resources>
