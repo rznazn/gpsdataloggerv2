@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/GPSDataLoggerv2.iml" filepath="$PROJECT_DIR$/GPSDataLoggerv2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" filepath="$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" filepath="$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" />
     </modules>
   </component>
 </project>
