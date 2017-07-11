@@ -2,9 +2,16 @@
 
     package="com.babykangaroo.android.mydatabaselibrary">
 
-    <application android:allowBackup="true" android:label="@string/app_name"
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <!-- TODO change the authority to current app-->
+        <provider
+            android:name=".ListProvider"
+            android:authorities="com.babykangaroo.android.gpsdataloggerv2"
+            android:exported="true" />
     </application>
 
 </manifest>

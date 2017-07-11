@@ -11,7 +11,8 @@ public class ListContract {
     /**
      * URI component strings
      */
-    public static final String CONTENT_AUTHORITY = "com.babykangaroo.android.simplelists";
+    //TODO change authority to current app
+    public static final String CONTENT_AUTHORITY = "com.babykangaroo.android.gpsdataloggerv2";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://"+ CONTENT_AUTHORITY);
     public static final String DIRECTORY_PATH_NAME = "directory";
     public static final String ITEMS_PATH_NAME = "items";
