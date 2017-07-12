@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/mycompasslibrary" />
             <option value="$PROJECT_DIR$/mydatabaselibrary" />
             <option value="$PROJECT_DIR$/mylocationlibrary" />
             <option value="$PROJECT_DIR$/wamformaterlib" />
