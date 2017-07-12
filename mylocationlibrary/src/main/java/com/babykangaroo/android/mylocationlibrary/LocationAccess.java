@@ -144,6 +144,9 @@ public class LocationAccess implements SensorEventListener{
         }
     }
 
+    /**
+     * @param event from the sensor manager gets sorted by type and then recalculates bearing
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -151,7 +154,6 @@ public class LocationAccess implements SensorEventListener{
 
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             geomagnetic = event.values;
-
         }
 
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
