@@ -3,6 +3,11 @@ package com.babykangaroo.android.mylocationlibrary;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 
@@ -12,11 +17,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 /**
  * Created by sport on 7/12/2017.
  */
 
-public class LocationAccess {
+public class LocationAccess implements SensorEventListener{
 
     private Context mContext;
 
@@ -40,6 +47,22 @@ public class LocationAccess {
     private double mAccuracy;
     private float mBearing;
     private double mSpeed;
+
+    /**
+     * Variables for compass
+     */
+    private SensorManager mSensorManager;
+
+    private float[] gravity = new float[3];
+    private float[] geomagnetic = new float[3];
+    private float[] rotation = new float[9];
+    private float[] orientation = new float[3];
+
+    private GeomagneticField mGeoMagField;
+
+    private Sensor mSensorGravity;
+    private Sensor mSensorMagnetic;
+    private double mBearingMagnetic = 0.0;
 
 
     /**
@@ -79,6 +102,9 @@ public class LocationAccess {
                     mAccuracy = location.getAccuracy();
                     mBearing = location.getBearing();
                     mSpeed = location.getSpeed();
+                    mGeoMagField = new GeomagneticField(Double.valueOf(mLatitude).floatValue(),
+                            Double.valueOf(mLongitude).floatValue(),
+                            Double.valueOf(location.getAltitude()).floatValue(),time);
                 }
             }
         };
@@ -93,20 +119,17 @@ public class LocationAccess {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         startLocationUpdates();
 
-//        if (ActivityCompat.checkSelfPermission( mContext,
-//                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            mLocationClient.getLastLocation()
-//                    .addOnSuccessListener((Activity) mContext, new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            // Got last known location. In some rare situations this can be null.
-//                            if (location != null) {
-//                                mLocation = location;
-//                            }
-//                        }
-//                    });
-//        }
+        /**
+         * set the sensors and sensor manager
+         */
+        mSensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
+        mSensorGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
+        mSensorManager.registerListener(this, mSensorMagnetic,
+                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mSensorGravity,
+                SensorManager.SENSOR_DELAY_GAME);
     }
 
     /**
@@ -120,12 +143,46 @@ public class LocationAccess {
                     null /* Looper */);
         }
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            gravity = event.values;
+
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            geomagnetic = event.values;
+
+        }
+
+        SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
+        SensorManager.getOrientation(rotation, orientation);
+        mBearingMagnetic = orientation[0];
+        mBearingMagnetic = Math.toDegrees(mBearingMagnetic);
+        mBearingMagnetic = Math.round(mBearingMagnetic);
+
+        /**
+         * adjust for declination
+         */
+        if (mGeoMagField != null) {
+            mBearingMagnetic += mGeoMagField.getDeclination();
+        }
+
+        /**
+         * set mBearing to be 0 - 360
+         */
+        if (mBearingMagnetic < 0) {
+            mBearingMagnetic += 360;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
     /**
      * getter methods
      */
-    public Location getLastKnownLocation(){
-        return mLocation;
-    }
+    public Location getLastKnownLocation(){return mLocation;}
 
     public double getmLatitude(){return mLatitude;}
     public double getmLongitude(){return mLongitude;}
@@ -138,5 +195,6 @@ public class LocationAccess {
     public long getmGPSTimeOffset(){return mGPSTimeOffset;}
     public double getmAccuracy(){return mAccuracy;}
     public float getmBearing(){return mBearing;}
+    public double getmBearingMagnetic(){return mBearingMagnetic;}
     public double getmSpeed(){return mSpeed;}
 }

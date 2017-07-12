@@ -29,7 +29,7 @@ public class FileManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.v("MY TEST LOG", "confirmed click");
-                double latt = mLocationAccess.getLastKnownLocation().getLatitude();
+                double latt = mLocationAccess.getmBearingMagnetic();
                 Toast.makeText(context, String.valueOf(latt), Toast.LENGTH_SHORT).show();
             }
         });
