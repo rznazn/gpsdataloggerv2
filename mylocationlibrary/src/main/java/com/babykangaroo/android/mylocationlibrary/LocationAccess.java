@@ -17,6 +17,9 @@ import com.google.android.gms.location.LocationServices;
  */
 
 public class LocationAccess {
+
+    private Context mContext;
+
     /**
      * location service variables
      */
@@ -26,8 +29,6 @@ public class LocationAccess {
     private LocationCallback mLocationCallback;
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 9999;
 
-    private Context mContext;
-
     /**
      * variables for location aspects
      */
@@ -35,6 +36,7 @@ public class LocationAccess {
     private double mLongitude;
     private double mAltitude;
     private long mGPSTime;
+    private long mGPSTimeOffset;
     private double mAccuracy;
     private float mBearing;
     private double mSpeed;
@@ -67,11 +69,13 @@ public class LocationAccess {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
+                    long time = System.currentTimeMillis();
                     mLocation = location;
                     mLatitude = location.getLatitude();
                     mLongitude = location.getLongitude();
                     mAltitude = location.getAltitude();
                     mGPSTime = location.getTime();
+                    mGPSTimeOffset = time - mGPSTime;
                     mAccuracy = location.getAccuracy();
                     mBearing = location.getBearing();
                     mSpeed = location.getSpeed();
@@ -126,7 +130,12 @@ public class LocationAccess {
     public double getmLatitude(){return mLatitude;}
     public double getmLongitude(){return mLongitude;}
     public double getmAltitude(){return mAltitude;}
-    public long getmGPSTime(){return mGPSTime;} //time is of the last received location not current
+    public long getmGPSTime(){return mGPSTime;} //of the last received location not current gps time
+
+    /**GPSTimeOffset should be subtracted from actual time [System.getCurrentTimeMillis()] to correct difference
+     * this correction might not be exact, but should be enough to correct differences greater than a second
+     */
+    public long getmGPSTimeOffset(){return mGPSTimeOffset;}
     public double getmAccuracy(){return mAccuracy;}
     public float getmBearing(){return mBearing;}
     public double getmSpeed(){return mSpeed;}
