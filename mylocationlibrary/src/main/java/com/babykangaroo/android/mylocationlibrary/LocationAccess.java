@@ -81,7 +81,9 @@ public class LocationAccess implements SensorEventListener{
      */
     public LocationAccess(Context context, @Nullable LocationUpdateListener locationUpdateListener){
         mContext = context;
-        this.mLocationUpdateListener = locationUpdateListener;
+        if (locationUpdateListener != null) {
+            this.mLocationUpdateListener = locationUpdateListener;
+        }
         /**
          * initiate the FusedLocationProviderClient that will provide the last known locations.
          */
