@@ -97,6 +97,7 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
         public ItemViewHolder(View itemView) {
             super(itemView);
             tvLogName = (TextView) itemView.findViewById(R.id.tv_list_item_name);
+            itemView.setOnClickListener(this);
         }
 
         @Override
