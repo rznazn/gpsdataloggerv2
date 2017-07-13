@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoggingActivity"></activity>
+        <activity android:name=".LoggingActivity"
+            android:parentActivityName=".FileManagerActivity"/>
     </application>
 
 </manifest>

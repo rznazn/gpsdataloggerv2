@@ -14,6 +14,7 @@ public class LoggingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logging);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvLogEvent = (TextView) findViewById(R.id.tv_log_event);
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
