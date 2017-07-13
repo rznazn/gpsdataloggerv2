@@ -34,6 +34,7 @@ public class ListDBHelper extends SQLiteOpenHelper {
                 + ListContract.ListContractEntry.COLUMN_EVENT_TIME + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_GPS_ACCURACY + " TEXT, "

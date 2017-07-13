@@ -30,11 +30,12 @@ public class ListContract {
         public static final String DIRECTORY_TABLE_NAME = "directory";
         public static final String ITEMS_TABLE_NAME = "items";
         public final static String _ID = BaseColumns._ID;
-        public static final String COLUMN_LOG_NAME = "event";
+        public static final String COLUMN_LOG_NAME = "log";
         public static final String COLUMN_ITEM_PARENT_LIST = "parent_list";
         public static final String COLUMN_EVENT_TIME = "event_time";
         public static final String COLUMN_EVENT_LATITUDE = "event_latitude";
         public static final String COLUMN_EVENT_LONGITUDE = "event_longitude";
+        public static final String COLUMN_EVENT_ALTITUDE = "event_altitude";
         public static final String COLUMN_EVENT_BEARING_MAG = "bearing_magnetic";
         public static final String COLUMN_EVENT_BEARING_FROM_LAST = "bearing_from_last";
         public static final String COLUMN_GPS_ACCURACY = "gps_accuracy";
