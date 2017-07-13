@@ -6,14 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.babykangaroo.android.mylocationlibrary.LocationAccess;
 
 public class FileManagerActivity extends AppCompatActivity {
 
-    Button testButton;
+    ImageView testButton;
     private LocationAccess mLocationAccess;
     public Location mLocation;
     private Context context;
@@ -24,7 +24,7 @@ public class FileManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_manager);
         context = this;
         mLocationAccess = new LocationAccess(context);
-        testButton = (Button) findViewById(R.id.test_button);
+        testButton = (ImageView) findViewById(R.id.test_button);
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
