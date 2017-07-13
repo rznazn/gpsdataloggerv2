@@ -1,1 +1,1 @@
-include ':app', ':mydatabaselibrary', ':wamformaterlib', ':mylocationlibrary', ':mycompasslibrary'
+include ':app', ':mydatabaselibrary', ':wamformaterlib', ':mylocationlibrary'
