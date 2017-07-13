@@ -42,14 +42,4 @@ public class FileManagerActivity extends AppCompatActivity {
             }
         });
     }
-
-//    @OnClick(R.id.test_button)
-//    public void myMethodFOrMe(){
-//        Log.v("MY TEST LOG", "confirmed click");
-//        ContentValues cv = new ContentValues();
-//        cv.put(ListContract.ListContractEntry.COLUMN_LOG_NAME, "test item");
-//        Uri uri = getContentResolver().insert(ListContract.ListContractEntry.DIRECTORY_CONTENT_URI, cv);
-//        Log.v("MY TEST LOG", uri.toString());
-//        Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
-//    }
 }
