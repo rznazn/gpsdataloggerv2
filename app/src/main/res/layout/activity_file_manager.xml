@@ -23,7 +23,7 @@
             android:hint="new log name" />
 
         <ImageView
-            android:id="@+id/test_button"
+            android:id="@+id/iv_add_new_entry"
             android:layout_width="@dimen/icon_view_size"
             android:layout_height="@dimen/icon_view_size"
             android:layout_gravity="center"

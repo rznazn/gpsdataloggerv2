@@ -26,7 +26,7 @@ public class ListDBHelper extends SQLiteOpenHelper {
 
         String SQL_CREATE_NEW_DIRECTORY_TABLE = "CREATE TABLE " + ListContract.ListContractEntry.DIRECTORY_TABLE_NAME +" ("
                 + ListContract.ListContractEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ListContract.ListContractEntry.COLUMN_ITEM_NAME + " TEXT UNIQUE NOT NULL);";
+                + ListContract.ListContractEntry.COLUMN_LOG_NAME + " TEXT UNIQUE NOT NULL);";
 
         String SQL_CREATE_NEW_ITEMS_TABLE = "CREATE TABLE " + ListContract.ListContractEntry.ITEMS_TABLE_NAME +" ("
                 + ListContract.ListContractEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
