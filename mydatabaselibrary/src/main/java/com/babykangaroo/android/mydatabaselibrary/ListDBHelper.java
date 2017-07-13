@@ -30,8 +30,14 @@ public class ListDBHelper extends SQLiteOpenHelper {
 
         String SQL_CREATE_NEW_ITEMS_TABLE = "CREATE TABLE " + ListContract.ListContractEntry.ITEMS_TABLE_NAME +" ("
                 + ListContract.ListContractEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ListContract.ListContractEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, "
                 + ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " TEXT NOT NULL, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_TIME + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_GPS_ACCURACY + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_ITEM_NOTE + " TEXT);";
 
         db.execSQL(SQL_CREATE_NEW_DIRECTORY_TABLE);
