@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,19 +39,6 @@ public class FileManagerActivity extends AppCompatActivity {
                     etNewEntry.setText("");
                     Toast.makeText(context, uri.toString(), Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-
-        /**
-         * TODO remove test button when ready
-         */
-        testButton = (ImageView) findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("MY TEST LOG", "confirmed click");
-                double latt = mLocationAccess.getmBearingMagnetic();
-                Toast.makeText(context, String.valueOf(latt), Toast.LENGTH_SHORT).show();
             }
         });
     }
