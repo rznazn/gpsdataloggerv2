@@ -70,6 +70,10 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
      */
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
+        mCursor.moveToPosition(position);
+        final String itemName1 = mCursor.getString(mCursor.
+                getColumnIndex(ListContract.ListContractEntry.COLUMN_LOG_NAME));
+        holder.tvLogName.setText(itemName1);
 
     }
 
