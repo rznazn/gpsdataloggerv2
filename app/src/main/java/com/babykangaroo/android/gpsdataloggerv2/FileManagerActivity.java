@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +12,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -66,11 +66,9 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
 
     @Override
     public void onItemClick(long itemCursorID, String itemName) {
-        Log.v("click tester", "CLICK CONFIRMED");
-        Toast.makeText(context, itemName, Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent(this, SubListActivity.class);
-//        intent.putExtra("log name", itemName);
-//        startActivity(intent);
+        Intent intent = new Intent(this, LoggingActivity.class);
+        intent.putExtra("log name", itemName);
+        startActivity(intent);
     }
 
     @Override
