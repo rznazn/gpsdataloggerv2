@@ -24,4 +24,13 @@
         android:textSize="@dimen/default_text_size"
         android:text="Log Event"/>
 
+    <TextView
+        android:id="@+id/tv_measure_log"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/icon_view_size"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/default_text_size"
+        android:text="measure log"/>
+
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.babykangaroo.android.gpsdataloggerv2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +22,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
     private TextView tvLogEvent;
     private TextView tvCurrentLogName;
+    private TextView tvTestFunction;
     private LocationAccess mLocationAccess;
-    private ContentValues mContentValues = new ContentValues();
+    private Location mLastGivenLocation;
     private Context context;
 
     private String mCurrentLog;
@@ -38,6 +40,20 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mLocationAccess = new LocationAccess(this,this);
 
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
+        tvTestFunction = (TextView) findViewById(R.id.tv_measure_log);
+        tvTestFunction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] args = new String[1];
+                args[0] = mCurrentLog;
+                Cursor cursor = getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
+                        null,
+                        ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
+                        args,
+                        ListContract.ListContractEntry.COLUMN_EVENT_TIME);
+                Log.v("LOGGING ACTIVITY", String.valueOf(cursor.getCount()));
+            }
+        });
         Intent intent = getIntent();
         mCurrentLog = intent.getStringExtra("log name");
         tvCurrentLogName.setText(mCurrentLog);
@@ -47,9 +63,34 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvLogEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mContentValues.size() == 0) {
-                    Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, mContentValues);
-                    Log.v("LOGGING ACTIVITY", "LOGGED");
+                if(mLastGivenLocation != null) {
+                    long time = System.currentTimeMillis();
+                    double azimuth = mLocationAccess.getmBearingMagnetic();
+                    ContentValues contentValues = new ContentValues();
+                    mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
+                    String eventTime = "";
+                    String eventTimeEnd = "";
+                    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
+                    try {
+                        eventTime = dateFormat.parse(String.valueOf(time - mTimeCorrection)).toString();
+                        eventTimeEnd = dateFormat.parse(String.valueOf(time + 10000 - mTimeCorrection)).toString();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "Action");
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
+                    contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, "Test Note");
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, mLastGivenLocation.getLatitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, mLastGivenLocation.getLongitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, mLastGivenLocation.getAltitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, mLastGivenLocation.getSpeed());
+                    Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+                    Log.v("LOGGING ACTIVITY", "ACTION LOGGED");
                 }else {
                     Toast.makeText(context, "content values still null", Toast.LENGTH_LONG).show();
                 }
@@ -61,21 +102,45 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     public void onLocationUpdate(Location location){
         long time = System.currentTimeMillis();
+        mLastGivenLocation = location;
+        ContentValues contentValues = new ContentValues();
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
         String eventTime = "";
+        String eventTimeEnd = "";
         java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
         try {
             eventTime = dateFormat.parse(String.valueOf(time - mTimeCorrection)).toString();
+            eventTimeEnd = dateFormat.parse(String.valueOf(time + 10000 - mTimeCorrection)).toString();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
-        mContentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
-        Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, mContentValues);
+//        public static final String COLUMN_ITEM_PARENT_LIST = "parent_list";
+//        public static final String COLUMN_EVENT_KEYWORD = "keyword";
+//        public static final String COLUMN_EVENT_TIME = "event_time";
+//        public static final String COlUMN_TRACK_NUMBER = "track_number";
+//        public static final String COLUMN_EVENT_LATITUDE = "event_latitude";
+//        public static final String COLUMN_EVENT_LONGITUDE = "event_longitude";
+//        public static final String COLUMN_EVENT_ALTITUDE = "event_altitude";
+//        public static final String COLUMN_FIGURE_COLOR = "figure_color";
+//        public static final String COLUMN_EVENT_BEARING_MAG = "bearing_magnetic";
+//        public static final String COLUMN_EVENT_BEARING_FROM_LAST = "bearing_from_last";
+//        public static final String COLUMN_EVENT_RANGE = "event_range";
+//        public static final String COLUMN_EVENT_END_TIME = "event_end_time";
+//        public static final String COLUMN_GPS_ACCURACY = "gps_accuracy";
+//        public static final String COLUMN_SPEED_FROM_LAST = "gps_speed";
+//        public static final String COLUMN_ITEM_NOTE = "note";
+        contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
+        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
+        contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
+        contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
+        Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+        Log.v("LOGGING ACTIVITY", "POINT LOGGED");
     }
 }
