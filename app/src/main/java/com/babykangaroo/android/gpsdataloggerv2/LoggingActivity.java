@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.babykangaroo.android.mylocationlibrary.LocationAccess;
 
-import java.text.ParseException;
+import java.util.Date;
 
 public class LoggingActivity extends AppCompatActivity implements LocationAccess.LocationUpdateListener{
 
@@ -68,15 +68,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     double azimuth = mLocationAccess.getmBearingMagnetic();
                     ContentValues contentValues = new ContentValues();
                     mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
-                    String eventTime = "";
-                    String eventTimeEnd = "";
+                    String eventTime;
+                    String eventTimeEnd;
                     java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
-                    try {
-                        eventTime = dateFormat.parse(String.valueOf(time - mTimeCorrection)).toString();
-                        eventTimeEnd = dateFormat.parse(String.valueOf(time + 10000 - mTimeCorrection)).toString();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                        eventTime = dateFormat.format(new Date(time - mTimeCorrection));
+                        eventTimeEnd = dateFormat.format(new Date(time + 10000 - mTimeCorrection));
                     contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "Action");
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
@@ -105,15 +101,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mLastGivenLocation = location;
         ContentValues contentValues = new ContentValues();
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
-        String eventTime = "";
-        String eventTimeEnd = "";
+        String eventTime;
+        String eventTimeEnd;
         java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
-        try {
-            eventTime = dateFormat.parse(String.valueOf(time - mTimeCorrection)).toString();
-            eventTimeEnd = dateFormat.parse(String.valueOf(time + 10000 - mTimeCorrection)).toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        eventTime = dateFormat.format(new Date(time - mTimeCorrection));
+        eventTimeEnd = dateFormat.format(new Date(time + 10000 - mTimeCorrection));
 //        public static final String COLUMN_ITEM_PARENT_LIST = "parent_list";
 //        public static final String COLUMN_EVENT_KEYWORD = "keyword";
 //        public static final String COLUMN_EVENT_TIME = "event_time";
@@ -141,6 +133,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-        Log.v("LOGGING ACTIVITY", "POINT LOGGED");
+        Log.v("LOGGING ACTIVITY", eventTime);
     }
 }
