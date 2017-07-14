@@ -149,13 +149,21 @@ public class LocationAccess implements SensorEventListener{
     /**
      * begin recieving location updates as defined by mLocationRequest
      */
-    private void startLocationUpdates() {
+    public void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission( mContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback,
                     null /* Looper */);
         }
+    }
+
+    /**
+     * stop updates
+     */
+
+    public void stopUpdates(){
+        mLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     /**

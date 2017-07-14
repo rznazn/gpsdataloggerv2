@@ -135,4 +135,16 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
         Log.v("LOGGING ACTIVITY", eventTime);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mLocationAccess.stopUpdates();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocationAccess.startLocationUpdates();
+    }
 }
