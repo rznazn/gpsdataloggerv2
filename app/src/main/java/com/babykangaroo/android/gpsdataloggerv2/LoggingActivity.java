@@ -3,6 +3,7 @@ package com.babykangaroo.android.gpsdataloggerv2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,13 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logging);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        /**
+         * disable screen TimeOut
+         */
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setContentView(R.layout.activity_logging);
 
         context = this;
         mLocationAccess = new LocationAccess(this,this);
@@ -64,6 +73,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             @Override
             public void onClick(View v) {
                 if(mLastGivenLocation != null) {
+                    Location location = mLastGivenLocation;
                     long time = System.currentTimeMillis();
                     double azimuth = mLocationAccess.getmBearingMagnetic();
                     ContentValues contentValues = new ContentValues();
@@ -78,15 +88,15 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                     contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                     contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, "Test Note");
-                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, mLastGivenLocation.getLatitude());
-                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, mLastGivenLocation.getLongitude());
-                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, mLastGivenLocation.getAltitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
                     contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
-                    contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, mLastGivenLocation.getSpeed());
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                     Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                    Log.v("LOGGING ACTIVITY", "ACTION LOGGED");
+                    Log.v("LOGGING ACTIVITY", String.valueOf(azimuth));
                 }else {
                     Toast.makeText(context, "content values still null", Toast.LENGTH_LONG).show();
                 }
@@ -133,7 +143,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-        Log.v("LOGGING ACTIVITY", eventTime);
+        Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection));
     }
 
     @Override
