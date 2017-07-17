@@ -71,6 +71,7 @@ public class LocationAccess implements SensorEventListener{
      */
     public interface LocationUpdateListener{
         void onLocationUpdate(Location location);
+        void onAzimuthChange(double azimuth);
     }
 
 
@@ -197,6 +198,7 @@ public class LocationAccess implements SensorEventListener{
         if (mBearingMagnetic < 0) {
             mBearingMagnetic += 360;
         }
+        mLocationUpdateListener.onAzimuthChange(mBearingMagnetic);
     }
 
     @Override
