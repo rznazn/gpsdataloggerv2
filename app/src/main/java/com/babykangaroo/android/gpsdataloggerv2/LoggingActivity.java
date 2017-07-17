@@ -31,6 +31,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
     private String mCurrentLog;
     private long mTimeCorrection;
+    private long mAzimuthUpdateTimeReference;
+    private int mBearingMagnetic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 if(mLastGivenLocation != null) {
                     Location location = mLastGivenLocation;
                     long time = System.currentTimeMillis();
-                    double azimuth = mLocationAccess.getmBearingMagnetic();
                     ContentValues contentValues = new ContentValues();
                     mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
                     String eventTime;
@@ -92,11 +93,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
                     contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
-                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
+                    contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, mBearingMagnetic);
                     contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                     contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
-                    Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                    Log.v("LOGGING ACTIVITY", String.valueOf(azimuth));
+                    getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+                    Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection) + "_" + String.valueOf(mBearingMagnetic));
                 }else {
                     Toast.makeText(context, "content values still null", Toast.LENGTH_LONG).show();
                 }
@@ -144,6 +145,16 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
         Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection));
+    }
+
+    @Override
+    public void onAzimuthChange(double azimuth) {
+        mBearingMagnetic = (int) azimuth;
+        long time = System.currentTimeMillis();
+        if (mAzimuthUpdateTimeReference == 0|| mAzimuthUpdateTimeReference < time) {
+            tvLogEvent.setText(String.valueOf(mBearingMagnetic));
+            mAzimuthUpdateTimeReference = System.currentTimeMillis() + 150;
+        }
     }
 
     @Override
