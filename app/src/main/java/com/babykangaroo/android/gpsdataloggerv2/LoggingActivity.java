@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -58,7 +59,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvLogNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(2,mLastGivenLocation, System.currentTimeMillis()-mTimeCorrection);
+                logEvent(2,mLastGivenLocation, System.currentTimeMillis()-mTimeCorrection,null);
             }
         });
         Intent intent = getIntent();
@@ -70,7 +71,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvLogEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(1, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection);
+                logEvent(1, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
             }
         });
 
@@ -127,7 +128,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mLocationAccess.startLocationUpdates();
     }
 
-    private void logEvent(int type1forBearing2forNote, final Location location, final long gpsCorrectedTime) {
+    private void logEvent(int type1forBearing2forNote,
+                          final Location location,
+                          final long gpsCorrectedTime,
+                          @Nullable final Integer azimuth) {
         if (mLastGivenLocation != null) {
             adWasDismissed = false;
             java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
@@ -169,11 +173,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                             getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
@@ -193,6 +198,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
