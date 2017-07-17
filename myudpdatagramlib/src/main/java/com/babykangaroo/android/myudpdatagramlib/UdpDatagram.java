@@ -1,6 +1,7 @@
 package com.babykangaroo.android.myudpdatagramlib;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -20,8 +21,16 @@ public class UdpDatagram {
     private InetAddress mDestinationIP;
     private int mDestinationPort;
 
-    public UdpDatagram(Context context){
+    public UdpDatagram(Context context, String ipAddress, int port){
         mContext = context;
+        try {
+            mDestinationIP = InetAddress.getByName(ipAddress);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            Log.v("UDP DATAGRAM", "UNKNOWNHOST");
+        }
+        mDestinationPort = port;
+
     }
 
     public void initializeUdp(){
@@ -39,6 +48,7 @@ public class UdpDatagram {
             mDatagramSocket.send(pack);
         } catch (IOException e) {
             e.printStackTrace();
+            Log.v("UDP DATAGRAM", "SEND FAILED");
         }
     }
 
