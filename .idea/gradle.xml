@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/mydatabaselibrary" />
             <option value="$PROJECT_DIR$/mylocationlibrary" />
+            <option value="$PROJECT_DIR$/myudpdatagramlib" />
             <option value="$PROJECT_DIR$/wamformaterlib" />
           </set>
         </option>
