@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/darker_gray"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,19 +19,23 @@
     <TextView
         android:id="@+id/tv_log_event"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/icon_view_size"
+        android:layout_height="@dimen/default_button_height"
+        android:layout_margin="@dimen/default_padding_size"
+        android:background="@android:color/holo_blue_bright"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/default_text_size"
         android:text="Log Event"/>
 
     <TextView
-        android:id="@+id/tv_measure_log"
+        android:id="@+id/tv_log_note"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/icon_view_size"
+        android:layout_height="@dimen/default_button_height"
+        android:layout_margin="@dimen/default_padding_size"
+        android:background="@android:color/holo_red_light"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/default_text_size"
-        android:text="measure log"/>
+        android:text="log note"/>
 
 </LinearLayout>
