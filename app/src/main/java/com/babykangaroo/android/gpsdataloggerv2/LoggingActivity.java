@@ -6,12 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.babykangaroo.android.mylocationlibrary.LocationAccess;
+import com.babykangaroo.android.myudpdatagramlib.UdpDatagram;
+import com.example.WamFormater;
 
 import java.util.Date;
 
@@ -30,13 +33,15 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private TextView tvLogNote;
     private LocationAccess mLocationAccess;
     private Location mLastGivenLocation;
-    private Context context;
+    private Context mContext;
 
     private String mCurrentLog;
     private long mTimeCorrection;
     private long mAzimuthUpdateTimeReference;
     private int mBearingMagnetic;
     private boolean adWasDismissed;
+
+    private UdpDatagram mDatagram;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_logging);
 
-        context = this;
+        mContext = this;
+        mDatagram = new UdpDatagram(this, "166.166.58.147", 50000);
         mLocationAccess = new LocationAccess(this, this);
 
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
@@ -95,15 +101,26 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
         contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
-        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
-        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
-        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
+
+        String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
+        String longitude = Location.convert(location.getLongitude(), Location.FORMAT_MINUTES);
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, longitude);
+        String altitude = String.valueOf(location.getAltitude());
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, altitude);
+
         contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-        Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection));
+        String wamDataPack = WamFormater.formatPoint(eventTime,"001",latitude,
+                longitude,altitude);
+        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            mDatagram.sendPacket(wamDataPack);
+        }
     }
 
     @Override
@@ -141,6 +158,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             final View adLayout = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
             final TextView adtvEventSummary = (TextView) adLayout.findViewById(R.id.tv_event_summary);
             adtvEventSummary.setText("Event time: " + eventTime +
+                    "\nAzimuth: " + azimuth +
                     "\nLat: " + location.getLatitude() +
                     "\nLong: " + location.getLongitude()
             );
@@ -150,14 +168,16 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (!adWasDismissed) {
-                        Log.v("LOGGING ACTIVITY", "DIALOG WAS DISMISSED");
+                        /**
+                         * TODO implement later
+                          */
                     }
                 }
             });
             builder.setNeutralButton("cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    // do nothing
                 }
             });
             switch (type1forBearing2forNote) {
@@ -182,7 +202,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                             getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                            Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection) + "line bearing");
                         }
                     });
                     break;
@@ -207,7 +226,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                             getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                            Log.v("LOGGING ACTIVITY", eventTime + "__" + String.valueOf(mTimeCorrection) + "note");
                         }
                     });
 
@@ -216,7 +234,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             AlertDialog ad = builder.create();
             ad.show();
         } else {
-            Toast.makeText(context, "GPS not acquired", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "GPS not acquired", Toast.LENGTH_LONG).show();
         }
     }
 }

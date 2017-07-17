@@ -99,7 +99,7 @@ public class WamFormater {
         }
     }
 
-    public String formatPoint(String time, String trackNumber, String latitude, String longitude
+    public static String formatPoint(String time, String trackNumber, String latitude, String longitude
             , String altitude){
         String[] latSplit = latitude.split(":");
         String northOrSouth = "N";

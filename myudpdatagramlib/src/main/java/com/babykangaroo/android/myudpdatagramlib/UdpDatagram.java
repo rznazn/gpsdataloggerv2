@@ -1,6 +1,7 @@
 package com.babykangaroo.android.myudpdatagramlib;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -27,9 +28,9 @@ public class UdpDatagram {
             mDestinationIP = InetAddress.getByName(ipAddress);
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            Log.v("UDP DATAGRAM", "UNKNOWNHOST");
         }
         mDestinationPort = port;
+        initializeUdp();
 
     }
 
@@ -42,14 +43,12 @@ public class UdpDatagram {
     }
 
     public void sendPacket(String string){
-            DatagramPacket pack = new DatagramPacket(string.getBytes(),string.length()
+            final DatagramPacket pack = new DatagramPacket(string.getBytes(),string.length()
                     ,mDestinationIP, mDestinationPort);
-        try {
-            mDatagramSocket.send(pack);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.v("UDP DATAGRAM", "SEND FAILED");
-        }
+        udpAsyncTask send = new udpAsyncTask();
+        DatagramPacket[] overpack = new DatagramPacket[1];
+        overpack[0] = pack;
+        send.execute(overpack);
     }
 
     public void setDestination(String ipAddress, int port){
@@ -59,5 +58,19 @@ public class UdpDatagram {
             e.printStackTrace();
         }
         mDestinationPort = port;
+    }
+
+    class udpAsyncTask extends AsyncTask<DatagramPacket, Void, Void>{
+
+        @Override
+        protected Void doInBackground(DatagramPacket... params) {
+            try {
+                mDatagramSocket.send(params[0]);
+                Log.v("DATAGRAM", "SEND SUCCESS");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
