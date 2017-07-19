@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +29,8 @@ import java.util.Date;
 
 public class LoggingActivity extends AppCompatActivity implements LocationAccess.LocationUpdateListener {
 
-    private TextView tvLogEvent;
+    private ImageView tvLogEvent;
+    private TextView tvBearing;
     private TextView tvCurrentLogName;
     private TextView tvLogNote;
     private LocationAccess mLocationAccess;
@@ -57,10 +59,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         setContentView(R.layout.activity_logging);
 
         mContext = this;
-        mDatagram = new UdpDatagram(this, "166.166.58.147", 50000);
+        mDatagram = new UdpDatagram(this, "192.168.1.8", 50000);
         mLocationAccess = new LocationAccess(this, this);
 
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
+        tvBearing = (TextView) findViewById(R.id.tv_bearing);
         tvLogNote = (TextView) findViewById(R.id.tv_log_note);
         tvLogNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +76,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvCurrentLogName.setText(mCurrentLog);
 
 
-        tvLogEvent = (TextView) findViewById(R.id.tv_log_event);
+        tvLogEvent = (ImageView) findViewById(R.id.iv_log_event);
         tvLogEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +131,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mBearingMagnetic = (int) azimuth;
         long time = System.currentTimeMillis();
         if (mAzimuthUpdateTimeReference == 0 || mAzimuthUpdateTimeReference < time) {
-            tvLogEvent.setText(String.valueOf(mBearingMagnetic));
+            tvBearing.setText(String.valueOf(mBearingMagnetic));
             mAzimuthUpdateTimeReference = System.currentTimeMillis() + 150;
         }
     }

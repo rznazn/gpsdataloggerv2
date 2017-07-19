@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/darker_gray"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
     tools:context="com.babykangaroo.android.gpsdataloggerv2.LoggingActivity">
 
     <TextView
@@ -15,17 +14,31 @@
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/default_text_size"
-        tools:text="Name of current Log"/>
-    <TextView
-        android:id="@+id/tv_log_event"
+        tools:text="Name of current Log" />
+    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_height"
-        android:layout_margin="@dimen/default_padding_size"
-        android:background="@android:color/holo_blue_bright"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/default_text_size"
-        android:text="Log Event"/>
+        android:layout_height="1dp"
+        android:background="@android:color/black"/>
+
+
+        <TextView
+            android:id="@+id/tv_bearing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:layout_margin="@dimen/default_padding_size"
+            android:gravity="center"
+            android:text="bearing goes here"/>
+
+        <ImageView
+            android:id="@+id/iv_log_event"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_button_height"
+            android:layout_margin="@dimen/default_padding_size"
+            android:gravity="center"
+            android:src="@drawable/line_bearing_icon" />
 
     <TextView
         android:id="@+id/tv_log_note"
@@ -34,8 +47,8 @@
         android:layout_margin="@dimen/default_padding_size"
         android:background="@android:color/holo_red_light"
         android:gravity="center"
+        android:text="log note"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/default_text_size"
-        android:text="log note"/>
+        android:textSize="@dimen/default_text_size" />
 
 </LinearLayout>

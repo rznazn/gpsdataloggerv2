@@ -2,7 +2,6 @@ package com.babykangaroo.android.myudpdatagramlib;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -66,7 +65,6 @@ public class UdpDatagram {
         protected Void doInBackground(DatagramPacket... params) {
             try {
                 mDatagramSocket.send(params[0]);
-                Log.v("DATAGRAM", "SEND SUCCESS");
             } catch (IOException e) {
                 e.printStackTrace();
             }
