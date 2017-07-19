@@ -15,40 +15,53 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/default_text_size"
         tools:text="Name of current Log" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/black"/>
+        android:background="@android:color/black" />
 
-
-        <TextView
-            android:id="@+id/tv_bearing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
-            android:layout_margin="@dimen/default_padding_size"
-            android:gravity="center"
-            android:text="bearing goes here"/>
-
-        <ImageView
-            android:id="@+id/iv_log_event"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/default_button_height"
-            android:layout_margin="@dimen/default_padding_size"
-            android:gravity="center"
-            android:src="@drawable/line_bearing_icon" />
 
     <TextView
-        android:id="@+id/tv_log_note"
+        android:id="@+id/tv_bearing"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_height"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="@dimen/default_padding_size"
-        android:background="@android:color/holo_red_light"
         android:gravity="center"
-        android:text="log note"
+        android:text="bearing goes here"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/default_text_size" />
+        android:textSize="28sp" />
+
+    <ImageView
+        android:id="@+id/iv_log_event"
+        android:layout_width="@dimen/bearing_button_height"
+        android:layout_height="@dimen/bearing_button_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/default_padding_size"
+        android:gravity="center"
+        android:src="@drawable/line_bearing_icon" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_log_note"
+            android:layout_width="@dimen/default_button_height"
+            android:layout_height="@dimen/default_button_height"
+            android:layout_centerInParent="true"
+            android:layout_margin="12dp"
+            android:layout_marginTop="@dimen/default_padding_size"
+            android:background="@android:color/holo_red_light"
+            android:gravity="center"
+            android:text="log note"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size" />
+    </RelativeLayout>
 
 </LinearLayout>
