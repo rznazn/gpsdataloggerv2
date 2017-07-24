@@ -30,7 +30,7 @@ import com.example.WamFormater;
 
 import java.util.Date;
 
-public class LoggingActivity extends AppCompatActivity implements LocationAccess.LocationUpdateListener {
+public class LoggingActivity extends AppCompatActivity implements LocationAccess.LocationUpdateListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ImageView tvLogEvent;
     private TextView tvBearing;
@@ -45,6 +45,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private Context mContext;
 
     private SharedPreferences sharedPreferences;
+    private String destinationIp;
+    private int destinationPort;
+    private boolean liveUpdates;
 
     private String mCurrentLog;
     private long mTimeCorrection;
@@ -53,8 +56,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private boolean adWasDismissed;
 
     private UdpDatagram mDatagram;
-    private String destinationIp;
-    private int destinationPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +70,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         mContext = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
-        destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        setSharedPreferences();
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
         mLocationAccess = new LocationAccess(this, this);
 
@@ -153,11 +154,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
         Uri uri = getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-        String wamDataPack = WamFormater.formatPoint(eventTime,"001",latitude,
-                longitude,altitude);
+
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
+        if (netInfo != null && netInfo.isConnected() && liveUpdates) {
+            String wamDataPack = WamFormater.formatPoint(eventTime,"001",latitude,
+                    longitude,altitude);
             mDatagram.sendPacket(wamDataPack);
         }
     }
@@ -182,12 +184,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onResume() {
         super.onResume();
         mLocationAccess.startLocationUpdates();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("currentLog", mCurrentLog);
     }
 
     private void logEvent(int type1forBearing2forNote,
@@ -313,5 +309,16 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    void setSharedPreferences(){
+        destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
+        destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
+        liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        setSharedPreferences();
     }
 }

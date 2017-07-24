@@ -40,6 +40,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     private Switch swLiveUpdates;
     private Switch swMinimiedTracking;
     private TextView tvAdminPassword;
+
     private SharedPreferences sharedPreferences;
 
     private static final int LOADER_ID = 9998;
@@ -97,6 +98,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         });
 
         swLiveUpdates = (Switch) findViewById(R.id.sw_live_tracking);
+        swLiveUpdates.setChecked(sharedPreferences.getBoolean(getString(R.string.live_updates), false));
         swLiveUpdates.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,10 +201,13 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void toggleLiveUpdates(){
+        boolean  liveUpdates = swLiveUpdates.isChecked();
+        sharedPreferences.edit().putBoolean(getString(R.string.live_updates), liveUpdates).apply();
     }
 
     void toggleMinimizedTracking(){}
 
     void changeAdminPassword(){}
+
 
 }
