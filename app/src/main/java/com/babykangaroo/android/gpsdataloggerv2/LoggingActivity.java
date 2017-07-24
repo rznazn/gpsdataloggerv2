@@ -36,6 +36,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private TextView tvLogNote;
     private TextView tvEditLog;
     private TextView tvExportToWam;
+    private ImageView ivAdminSettings;
 
     private LocationAccess mLocationAccess;
     private Location mLastGivenLocation;
@@ -53,8 +54,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logging);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         /**
          * disable screen TimeOut
@@ -73,11 +72,27 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mCurrentLog = intent.getStringExtra("log name");
         tvCurrentLogName.setText(mCurrentLog);
 
+        ivAdminSettings = (ImageView) findViewById(R.id.iv_settings);
+        ivAdminSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSettings();
+            }
+        });
+
         tvEditLog = (TextView) findViewById(R.id.tv_edit_log);
         tvEditLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openEditLog();
+            }
+        });
+
+        tvExportToWam = (TextView) findViewById(R.id.tv_print_to_wam);
+        tvExportToWam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 
@@ -263,5 +278,32 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private void openEditLog(){
         Intent intent = new Intent(this, EditLogActivity.class);
         startActivity(intent);
+    }
+
+    private void openSettings(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter Password");
+        final EditText etPassword = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String password = etPassword.getText().toString();
+                if (password.equals("GeneRocks")){
+                    Intent intent = new Intent(mContext, FileManagerActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

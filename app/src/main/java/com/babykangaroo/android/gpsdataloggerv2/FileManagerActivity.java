@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
@@ -27,6 +29,12 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     private EditText etNewEntry;
     private RecyclerView rvLogList;
     private MyCursorAdapter mAdapter;
+    private TextView tvDestinationIp;
+    private TextView tvDestinationPort;
+    private Switch swLiveUpdates;
+    private Switch swMinimiedTracking;
+    private TextView tvAdminPassword;
+
     private static final int LOADER_ID = 9998;
     private Context context;
 
