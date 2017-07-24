@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FileManagerActivity">
+        <activity android:name=".LoggingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoggingActivity"/>
+            android:name=".FileManagerActivity"/>
         <activity android:name=".EditLogActivity"
             android:parentActivityName=".LoggingActivity"/>
     </application>

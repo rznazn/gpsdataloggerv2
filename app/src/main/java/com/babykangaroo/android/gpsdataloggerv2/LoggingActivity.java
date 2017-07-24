@@ -68,8 +68,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
-        Intent intent = getIntent();
-        mCurrentLog = intent.getStringExtra("log name");
+        mCurrentLog = "test";
         tvCurrentLogName.setText(mCurrentLog);
 
         ivAdminSettings = (ImageView) findViewById(R.id.iv_settings);
