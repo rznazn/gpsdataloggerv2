@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">GPS Data Logger v2</string>
     <string name="current_log">currentLog</string>
+    <string name="destination_ip">destinationIp</string>
+    <string name="default_ip">192.168.1.150</string>
+    <string name="destination_port">destinationPort</string>
+    <string name="default_port">50000</string>
 </resources>

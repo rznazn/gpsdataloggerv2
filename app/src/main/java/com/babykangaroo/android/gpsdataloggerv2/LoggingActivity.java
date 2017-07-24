@@ -53,6 +53,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private boolean adWasDismissed;
 
     private UdpDatagram mDatagram;
+    private String destinationIp;
+    private int destinationPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         mContext = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mDatagram = new UdpDatagram(this, "192.168.1.8", 50000);
+        destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
+        destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
+        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
         mLocationAccess = new LocationAccess(this, this);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);

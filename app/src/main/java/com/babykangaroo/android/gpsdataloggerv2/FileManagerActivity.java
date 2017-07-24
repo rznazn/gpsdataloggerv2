@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -11,9 +12,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -75,6 +79,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         getLoaderManager().restartLoader(LOADER_ID, null, this);
 
         tvDestinationIp = (TextView) findViewById(R.id.tv_ip_address);
+        tvDestinationIp.setText(sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.destination_ip)));
         tvDestinationIp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +88,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         });
 
         tvDestinationPort = (TextView) findViewById(R.id.tv_port);
+        tvDestinationPort.setText(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.destination_port)));
         tvDestinationPort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,9 +148,55 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         mAdapter.swapCursor(null);
     }
 
-    void setDestinationIp(){}
+    void setDestinationIp(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter Destinaton IP");
+        final EditText etIP = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-    void setDestinationPort(){}
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String destinationIp = etIP.getText().toString();
+                tvDestinationIp.setText(destinationIp);
+                sharedPreferences.edit().putString(getString(R.string.destination_ip), destinationIp).apply();
+                }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    void setDestinationPort(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter Destinaton IP");
+        final EditText etPort = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String destinationPort = etPort.getText().toString();
+                tvDestinationPort.setText(destinationPort);
+                sharedPreferences.edit().putString(getString(R.string.destination_port), destinationPort).apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     void toggleLiveUpdates(){
     }
