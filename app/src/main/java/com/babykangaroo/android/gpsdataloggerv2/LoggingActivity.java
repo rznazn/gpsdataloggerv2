@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private TextView tvBearing;
     private TextView tvCurrentLogName;
     private TextView tvLogNote;
+    private TextView tvEditLog;
+    private TextView tvExportToWam;
+
     private LocationAccess mLocationAccess;
     private Location mLastGivenLocation;
     private Context mContext;
@@ -62,8 +66,21 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mDatagram = new UdpDatagram(this, "192.168.1.8", 50000);
         mLocationAccess = new LocationAccess(this, this);
 
-        tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
+
+        tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
+        Intent intent = getIntent();
+        mCurrentLog = intent.getStringExtra("log name");
+        tvCurrentLogName.setText(mCurrentLog);
+
+        tvEditLog = (TextView) findViewById(R.id.tv_edit_log);
+        tvEditLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openEditLog();
+            }
+        });
+
         tvLogNote = (TextView) findViewById(R.id.tv_log_note);
         tvLogNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,10 +88,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 logEvent(2,mLastGivenLocation, System.currentTimeMillis()-mTimeCorrection,null);
             }
         });
-        Intent intent = getIntent();
-        mCurrentLog = intent.getStringExtra("log name");
-        tvCurrentLogName.setText(mCurrentLog);
-
 
         tvLogEvent = (ImageView) findViewById(R.id.iv_log_event);
         tvLogEvent.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +159,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onResume() {
         super.onResume();
         mLocationAccess.startLocationUpdates();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentLog", mCurrentLog);
     }
 
     private void logEvent(int type1forBearing2forNote,
@@ -239,5 +258,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         } else {
             Toast.makeText(mContext, "GPS not acquired", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void openEditLog(){
+        Intent intent = new Intent(this, EditLogActivity.class);
+        startActivity(intent);
     }
 }

@@ -36,5 +36,110 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/default_text_size"
+        android:background="@android:color/darker_gray"
+        android:text="Admin Settings"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:text="udp ip:"/>
+            <TextView
+                android:id="@+id/tv_ip_address"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:gravity="center_vertical|end"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_text_size"
+                android:text="Set Destination Ip:"/>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_text_size"
+                android:text="udp port:"/>
+            <TextView
+                android:id="@+id/tv_port"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:gravity="center_vertical|end"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_text_size"
+                android:text="Set Destination Port"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_text_size"
+                android:text="Send Live Updates:"/>
+            <Switch
+                android:id="@+id/sw_live_tracking"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_text_size"
+                android:text="Track if minimized:"/>
+        <Switch
+            android:id="@+id/sw_minimized_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:text="admin password:"/>
+        <TextView
+            android:id="@+id/tv_admin_password"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:gravity="center_vertical|end"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:text="Set Admin Password"/>
+    </LinearLayout>
 
 </LinearLayout>

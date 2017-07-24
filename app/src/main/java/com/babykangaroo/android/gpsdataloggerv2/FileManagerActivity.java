@@ -61,7 +61,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         rvLogList.setLayoutManager(layoutManager);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
@@ -90,4 +90,5 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
+
 }

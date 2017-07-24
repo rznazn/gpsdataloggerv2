@@ -10,7 +10,7 @@
         <provider
             android:name=".ListProvider"
             android:authorities="com.babykangaroo.android.gpsdataloggerv2"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>
