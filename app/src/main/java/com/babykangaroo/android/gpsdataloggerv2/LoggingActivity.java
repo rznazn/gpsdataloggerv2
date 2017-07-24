@@ -48,6 +48,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private String destinationIp;
     private int destinationPort;
     private boolean liveUpdates;
+    private boolean minimizedTracking;
 
     private String mCurrentLog;
     private long mTimeCorrection;
@@ -70,10 +71,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         mContext = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         setSharedPreferences();
-        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mLocationAccess = new LocationAccess(this, this);
+        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
@@ -177,12 +178,13 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     protected void onPause() {
         super.onPause();
-        mLocationAccess.stopUpdates();
+        if (!minimizedTracking){ mLocationAccess.stopUpdates();}
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        setSharedPreferences();
         mLocationAccess.startLocationUpdates();
     }
 
@@ -315,6 +317,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);
+        minimizedTracking = sharedPreferences.getBoolean(getString(R.string.minimized_tracking), false);
     }
 
     @Override

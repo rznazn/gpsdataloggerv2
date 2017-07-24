@@ -6,4 +6,5 @@
     <string name="destination_port">destinationPort</string>
     <string name="default_port">50000</string>
     <string name="live_updates">liveUpdates</string>
+    <string name="minimized_tracking">minimizedTracking</string>
 </resources>

@@ -107,6 +107,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         });
 
         swMinimiedTracking = (Switch) findViewById(R.id.sw_minimized_tracking);
+        swMinimiedTracking.setChecked(sharedPreferences.getBoolean(getString(R.string.minimized_tracking), false));
         swMinimiedTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,11 +202,12 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void toggleLiveUpdates(){
-        boolean  liveUpdates = swLiveUpdates.isChecked();
-        sharedPreferences.edit().putBoolean(getString(R.string.live_updates), liveUpdates).apply();
+        sharedPreferences.edit().putBoolean(getString(R.string.live_updates), swLiveUpdates.isChecked()).apply();
     }
 
-    void toggleMinimizedTracking(){}
+    void toggleMinimizedTracking(){
+        sharedPreferences.edit().putBoolean(getString(R.string.minimized_tracking), swMinimiedTracking.isChecked()).apply();
+    }
 
     void changeAdminPassword(){}
 
