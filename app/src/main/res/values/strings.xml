@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GPS Data Logger v2</string>
+    <string name="current_log">currentLog</string>
 </resources>

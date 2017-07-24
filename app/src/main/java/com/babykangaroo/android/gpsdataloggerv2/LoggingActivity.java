@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -11,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private Location mLastGivenLocation;
     private Context mContext;
 
+    private SharedPreferences sharedPreferences;
+
     private String mCurrentLog;
     private long mTimeCorrection;
     private long mAzimuthUpdateTimeReference;
@@ -62,13 +66,14 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         setContentView(R.layout.activity_logging);
 
         mContext = this;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mDatagram = new UdpDatagram(this, "192.168.1.8", 50000);
         mLocationAccess = new LocationAccess(this, this);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
-        mCurrentLog = "test";
+        mCurrentLog = sharedPreferences.getString(getString(R.string.current_log), "default");
         tvCurrentLogName.setText(mCurrentLog);
 
         ivAdminSettings = (ImageView) findViewById(R.id.iv_settings);
