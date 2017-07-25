@@ -57,6 +57,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private boolean adWasDismissed;
 
     private UdpDatagram mDatagram;
+    private boolean isActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setSharedPreferences();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        mLocationAccess = new LocationAccess(this, this);
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
@@ -129,6 +129,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         /**
          * Log point data at each location update to create a track of travel
          */
+        if (!minimizedTracking && !isActive){
+            mLocationAccess.stopUpdates();
+            mLocationAccess = null;
+            return;
+        }
         mLastGivenLocation = location;
         ContentValues contentValues = new ContentValues();
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
@@ -178,14 +183,19 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     protected void onPause() {
         super.onPause();
-        if (!minimizedTracking){ mLocationAccess.stopUpdates();}
+        isActive = false;
+        if (!minimizedTracking){
+            mLocationAccess.stopUpdates();
+            mLocationAccess = null;}
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setSharedPreferences();
-        mLocationAccess.startLocationUpdates();
+        isActive = true;
+        if (mLocationAccess == null) {
+            mLocationAccess = new LocationAccess(this, this);
+        }
     }
 
     private void logEvent(int type1forBearing2forNote,
