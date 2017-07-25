@@ -29,7 +29,6 @@ import static android.content.Context.SENSOR_SERVICE;
 public class LocationAccess implements SensorEventListener{
 
     private Context mContext;
-    private SharedPreferences mainSharedPreferences;
 
     /**
      * location service variables
@@ -133,7 +132,7 @@ public class LocationAccess implements SensorEventListener{
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(interval);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setFastestInterval(interval - 1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         startLocationUpdates();
 

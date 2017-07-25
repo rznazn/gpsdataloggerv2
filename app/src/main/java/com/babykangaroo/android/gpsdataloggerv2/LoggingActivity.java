@@ -137,7 +137,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mLastGivenLocation = location;
         ContentValues contentValues = new ContentValues();
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
-        long gpsCorrectedTime = System.currentTimeMillis()- mTimeCorrection;
+        long gpsCorrectedTime = location.getTime();
         String eventTime;
         String eventTimeEnd;
         java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
@@ -184,18 +184,28 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onPause() {
         super.onPause();
         isActive = false;
-        if (!minimizedTracking){
-            mLocationAccess.stopUpdates();
-            mLocationAccess = null;}
+        if (!minimizedTracking) {
+            try {
+                mLocationAccess.stopUpdates();
+                mLocationAccess = null;
+            }catch (NullPointerException e){
+
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isActive = true;
-        if (mLocationAccess == null) {
-            mLocationAccess = new LocationAccess(this, this, updateInterval);
+        try {
+            mLocationAccess.stopUpdates();
+            mLocationAccess = null;
+        }catch (NullPointerException e){
+
         }
+        mLocationAccess = new LocationAccess(this, this, updateInterval);
+
     }
 
     private void logEvent(int type1forBearing2forNote,
@@ -314,6 +324,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             public void onClick(DialogInterface dialogInterface, int i) {
                 String password = etPassword.getText().toString();
                 if (password.equals("GeneRocks"  ) || password.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)))){
+                    mLocationAccess.stopUpdates();
                     Intent intent = new Intent(mContext, FileManagerActivity.class);
                     startActivity(intent);
                 }
@@ -338,11 +349,5 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         setSharedPreferences();
-        if(s == getString(R.string.update_interval)){
-            int interval = sharedPreferences.getInt(s, getResources().getInteger(R.integer.default_update_interval));
-            mLocationAccess.stopUpdates();
-            mLocationAccess = null;
-            mLocationAccess = new LocationAccess(this, this, interval * 1000);
-        }
     }
 }
