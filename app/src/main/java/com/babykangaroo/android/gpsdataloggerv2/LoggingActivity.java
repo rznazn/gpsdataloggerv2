@@ -313,7 +313,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String password = etPassword.getText().toString();
-                if (password.equals("GeneRocks")){
+                if (password.equals("GeneRocks"  ) || password.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)))){
                     Intent intent = new Intent(mContext, FileManagerActivity.class);
                     startActivity(intent);
                 }
@@ -328,6 +328,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);
         minimizedTracking = sharedPreferences.getBoolean(getString(R.string.minimized_tracking), false);
+        sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password));
     }
 
     @Override

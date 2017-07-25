@@ -209,7 +209,30 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         sharedPreferences.edit().putBoolean(getString(R.string.minimized_tracking), swMinimiedTracking.isChecked()).apply();
     }
 
-    void changeAdminPassword(){}
+    void changeAdminPassword(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter New Admin Password");
+        final EditText etAdminPassword = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String adminPassword = etAdminPassword.getText().toString();
+                tvDestinationPort.setText(adminPassword);
+                sharedPreferences.edit().putString(getString(R.string.admin_password), adminPassword).apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
 
 }

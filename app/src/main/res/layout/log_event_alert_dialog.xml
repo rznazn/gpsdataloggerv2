@@ -15,10 +15,11 @@
 
     <EditText
         android:id="@+id/et_event_note"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/default_text_size"
         android:textColor="@android:color/black"
-        android:hint="enter note"/>
+        android:hint="enter selection"/>
 
 </LinearLayout>
