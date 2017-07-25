@@ -210,7 +210,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void changeAdminPassword(){
-        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final View adView = getLayoutInflater().inflate(R.layout.password_dialog, null);
         final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
         tvMessage.setText("Enter New Admin Password");
         final EditText etAdminPassword = (EditText) adView.findViewById(R.id.et_event_note);

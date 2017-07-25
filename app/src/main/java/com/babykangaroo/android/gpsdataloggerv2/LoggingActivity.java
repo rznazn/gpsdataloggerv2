@@ -297,7 +297,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     }
 
     private void openSettings(){
-        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final View adView = getLayoutInflater().inflate(R.layout.password_dialog, null);
         final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
         tvMessage.setText("Enter Password");
         final EditText etPassword = (EditText) adView.findViewById(R.id.et_event_note);
