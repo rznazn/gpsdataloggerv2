@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FileManagerActivity"/>
+            android:name=".FileManagerActivity"
+            android:parentActivityName=".LoggingActivity"/>
         <activity android:name=".EditLogActivity"
             android:parentActivityName=".LoggingActivity"/>
     </application>

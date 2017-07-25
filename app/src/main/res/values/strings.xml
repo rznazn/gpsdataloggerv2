@@ -11,4 +11,5 @@
     <string name="default_admin_password">guest</string>
     <string name="track_id">trackId</string>
     <string name="default_track_id">999</string>
+    <string name="update_interval">updateInterval</string>
 </resources>

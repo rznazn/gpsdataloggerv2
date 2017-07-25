@@ -46,6 +46,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
     private SharedPreferences sharedPreferences;
     private String trackId;
+    private long updateInterval;
     private String destinationIp;
     private int destinationPort;
     private boolean liveUpdates;
@@ -74,8 +75,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mContext = this;
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        setSharedPreferences();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        setSharedPreferences();
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
@@ -193,7 +194,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         super.onResume();
         isActive = true;
         if (mLocationAccess == null) {
-            mLocationAccess = new LocationAccess(this, this);
+            mLocationAccess = new LocationAccess(this, this, updateInterval);
         }
     }
 
@@ -325,6 +326,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     void setSharedPreferences(){
         mCurrentLog = sharedPreferences.getString(getString(R.string.current_log), "default");
         tvCurrentLogName.setText(mCurrentLog);
+        updateInterval = (sharedPreferences.getInt(getString(R.string.update_interval), getResources().getInteger(R.integer.default_update_interval)))* 1000;
         trackId = sharedPreferences.getString(getString(R.string.track_id), getString(R.string.default_track_id));
         destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
@@ -336,5 +338,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         setSharedPreferences();
+        if(s == getString(R.string.update_interval)){
+            int interval = sharedPreferences.getInt(s, getResources().getInteger(R.integer.default_update_interval));
+            mLocationAccess.stopUpdates();
+            mLocationAccess = null;
+            mLocationAccess = new LocationAccess(this, this, interval * 1000);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.babykangaroo.android.mylocationlibrary;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -9,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
@@ -27,6 +29,7 @@ import static android.content.Context.SENSOR_SERVICE;
 public class LocationAccess implements SensorEventListener{
 
     private Context mContext;
+    private SharedPreferences mainSharedPreferences;
 
     /**
      * location service variables
@@ -80,7 +83,7 @@ public class LocationAccess implements SensorEventListener{
      * all location services are handled in this object and data can be called with the getter methods defined below
      * @param context of the instantiating activity
      */
-    public LocationAccess(Context context, @Nullable LocationUpdateListener locationUpdateListener){
+    public LocationAccess(Context context, @Nullable LocationUpdateListener locationUpdateListener, long interval){
         mContext = context;
         if (locationUpdateListener != null) {
             this.mLocationUpdateListener = locationUpdateListener;
@@ -129,7 +132,7 @@ public class LocationAccess implements SensorEventListener{
          */
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
+        mLocationRequest.setInterval(interval);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         startLocationUpdates();
@@ -158,6 +161,7 @@ public class LocationAccess implements SensorEventListener{
                     null /* Looper */);
         }
     }
+
 
     /**
      * stop updates
