@@ -45,6 +45,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private Context mContext;
 
     private SharedPreferences sharedPreferences;
+    private String trackId;
     private String destinationIp;
     private int destinationPort;
     private boolean liveUpdates;
@@ -71,6 +72,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         setContentView(R.layout.activity_logging);
 
         mContext = this;
+        tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setSharedPreferences();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -78,9 +80,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
-        tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
-        mCurrentLog = sharedPreferences.getString(getString(R.string.current_log), "default");
-        tvCurrentLogName.setText(mCurrentLog);
 
         ivAdminSettings = (ImageView) findViewById(R.id.iv_settings);
         ivAdminSettings.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +145,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
+        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
 
         String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
@@ -164,7 +163,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected() && liveUpdates) {
-            String wamDataPack = WamFormater.formatPoint(eventTime,"001",latitude,
+            String wamDataPack = WamFormater.formatPoint(eventTime,trackId,latitude,
                     longitude,altitude);
             mDatagram.sendPacket(wamDataPack);
         }
@@ -324,6 +323,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     }
 
     void setSharedPreferences(){
+        mCurrentLog = sharedPreferences.getString(getString(R.string.current_log), "default");
+        tvCurrentLogName.setText(mCurrentLog);
+        trackId = sharedPreferences.getString(getString(R.string.track_id), getString(R.string.default_track_id));
         destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);

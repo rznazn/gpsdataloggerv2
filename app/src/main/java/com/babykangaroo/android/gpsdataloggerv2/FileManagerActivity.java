@@ -35,6 +35,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     private EditText etNewEntry;
     private RecyclerView rvLogList;
     private MyCursorAdapter mAdapter;
+    private TextView tvTrackId;
     private TextView tvDestinationIp;
     private TextView tvDestinationPort;
     private Switch swLiveUpdates;
@@ -79,8 +80,16 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
 
         getLoaderManager().restartLoader(LOADER_ID, null, this);
 
+        tvTrackId = (TextView) findViewById(R.id.tv_track_id);
+        tvTrackId.setText(sharedPreferences.getString(getString(R.string.track_id), getString(R.string.default_track_id)));
+        tvTrackId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTrackId();
+            }
+        });
         tvDestinationIp = (TextView) findViewById(R.id.tv_ip_address);
-        tvDestinationIp.setText(sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.destination_ip)));
+        tvDestinationIp.setText(sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip)));
         tvDestinationIp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +98,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         });
 
         tvDestinationPort = (TextView) findViewById(R.id.tv_port);
-        tvDestinationPort.setText(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.destination_port)));
+        tvDestinationPort.setText(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         tvDestinationPort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +125,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         });
 
         tvAdminPassword = (TextView) findViewById(R.id.tv_admin_password);
+        tvAdminPassword.setText(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)));
         tvAdminPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,6 +159,31 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    void setTrackId(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter Track Id");
+        final EditText etTrackId = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String trackId = etTrackId.getText().toString();
+                tvTrackId.setText(trackId);
+                sharedPreferences.edit().putString(getString(R.string.track_id), trackId).apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     void setDestinationIp(){
@@ -210,7 +245,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void changeAdminPassword(){
-        final View adView = getLayoutInflater().inflate(R.layout.password_dialog, null);
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
         final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
         tvMessage.setText("Enter New Admin Password");
         final EditText etAdminPassword = (EditText) adView.findViewById(R.id.et_event_note);
@@ -226,7 +261,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String adminPassword = etAdminPassword.getText().toString();
-                tvDestinationPort.setText(adminPassword);
+                tvAdminPassword.setText(adminPassword);
                 sharedPreferences.edit().putString(getString(R.string.admin_password), adminPassword).apply();
             }
         });

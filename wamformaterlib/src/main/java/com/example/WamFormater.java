@@ -127,7 +127,7 @@ public class WamFormater {
                 + time +"\\"
                 + wamLatFormatted + "\\" + northOrSouth + "\\"
                 + wamLonFormatted + "\\" + eastOrWest + "\\" + altitude +"\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
-                "\\\\F\\\\\\\\\\\\"+ trackNumber +"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GDD\\\n";
+                "\\\\F\\\\\\\\\\\\"+ trackNumber +"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GTA\\\n";
 //        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
 //        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
 //        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");

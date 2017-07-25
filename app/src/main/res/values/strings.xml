@@ -9,4 +9,6 @@
     <string name="minimized_tracking">minimizedTracking</string>
     <string name="admin_password">adminPassword</string>
     <string name="default_admin_password">guest</string>
+    <string name="track_id">trackId</string>
+    <string name="default_track_id">999</string>
 </resources>
