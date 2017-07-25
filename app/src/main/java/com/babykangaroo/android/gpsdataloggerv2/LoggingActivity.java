@@ -12,10 +12,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -46,6 +48,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
     private SharedPreferences sharedPreferences;
     private String trackId;
+    private int loggingInterval;
+    private long lastUpdate= 0;
     private String destinationIp;
     private int destinationPort;
     private boolean liveUpdates;
@@ -134,14 +138,16 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             return;
         }
         mLastGivenLocation = location;
-        ContentValues contentValues = new ContentValues();
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
-        long gpsCorrectedTime = System.currentTimeMillis()- mTimeCorrection;
+        if (lastUpdate+(loggingInterval*1000)> System.currentTimeMillis()){return;}
+        lastUpdate = System.currentTimeMillis();
+        long gpsTime = location.getTime();
         String eventTime;
         String eventTimeEnd;
         java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
-        eventTime = dateFormat.format(new Date(gpsCorrectedTime));
-        eventTimeEnd = dateFormat.format(new Date(gpsCorrectedTime + 10000));
+        eventTime = dateFormat.format(new Date(gpsTime));
+        eventTimeEnd = dateFormat.format(new Date(gpsTime + 10000));
+        ContentValues contentValues = new ContentValues();
         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
@@ -183,16 +189,25 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onPause() {
         super.onPause();
         isActive = false;
-        if (!minimizedTracking){
-            mLocationAccess.stopUpdates();
-            mLocationAccess = null;}
+        if (!minimizedTracking) {
+            try {
+                mLocationAccess.stopUpdates();
+                mLocationAccess = null;
+            }catch (NullPointerException e){
+            }
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isActive = true;
-        if (mLocationAccess == null) {
+        try {
+            mLocationAccess.stopUpdates();
+            mLocationAccess = null;
+        }catch (NullPointerException e){
+
             mLocationAccess = new LocationAccess(this, this);
         }
     }
@@ -313,6 +328,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             public void onClick(DialogInterface dialogInterface, int i) {
                 String password = etPassword.getText().toString();
                 if (password.equals("GeneRocks"  ) || password.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)))){
+                    mLocationAccess.stopUpdates();
                     Intent intent = new Intent(mContext, FileManagerActivity.class);
                     startActivity(intent);
                 }
@@ -326,6 +342,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mCurrentLog = sharedPreferences.getString(getString(R.string.current_log), "default");
         tvCurrentLogName.setText(mCurrentLog);
         trackId = sharedPreferences.getString(getString(R.string.track_id), getString(R.string.default_track_id));
+        loggingInterval = sharedPreferences.getInt(getString(R.string.log_interval), getResources().getInteger(R.integer.default_log_interval));
         destinationIp = sharedPreferences.getString(getString(R.string.destination_ip), getString(R.string.default_ip));
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);

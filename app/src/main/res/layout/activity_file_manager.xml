@@ -66,6 +66,26 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:text="Log Interval:"/>
+        <TextView
+            android:id="@+id/tv_log_interval"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:gravity="center_vertical|end"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/default_text_size"
+            android:text="Set Logging Interval"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <LinearLayout

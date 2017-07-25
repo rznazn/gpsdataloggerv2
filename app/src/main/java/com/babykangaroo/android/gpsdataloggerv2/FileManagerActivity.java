@@ -36,6 +36,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     private RecyclerView rvLogList;
     private MyCursorAdapter mAdapter;
     private TextView tvTrackId;
+    private TextView tvLogInterval;
     private TextView tvDestinationIp;
     private TextView tvDestinationPort;
     private Switch swLiveUpdates;
@@ -86,6 +87,15 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             @Override
             public void onClick(View view) {
                 setTrackId();
+            }
+        });
+
+        tvLogInterval = (TextView) findViewById(R.id.tv_log_interval);
+        tvLogInterval.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.log_interval), getResources().getInteger(R.integer.default_log_interval))));
+        tvLogInterval.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setLogInterval();
             }
         });
         tvDestinationIp = (TextView) findViewById(R.id.tv_ip_address);
@@ -180,6 +190,31 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                 String trackId = etTrackId.getText().toString();
                 tvTrackId.setText(trackId);
                 sharedPreferences.edit().putString(getString(R.string.track_id), trackId).apply();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    void setLogInterval(){
+        final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
+        final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
+        tvMessage.setText("Enter Logging Interval (seconds)");
+        final EditText etInterval = (EditText) adView.findViewById(R.id.et_event_note);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(adView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                int interval = Integer.valueOf(etInterval.getText().toString());
+                tvTrackId.setText(String.valueOf(interval));
+                sharedPreferences.edit().putInt(getString(R.string.log_interval), interval).apply();
             }
         });
         AlertDialog alertDialog = builder.create();
