@@ -79,7 +79,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setSharedPreferences();
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+//        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
@@ -206,10 +206,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         try {
             mLocationAccess.stopUpdates();
             mLocationAccess = null;
-        }catch (NullPointerException e){
+        }catch (NullPointerException e) {
 
-            mLocationAccess = new LocationAccess(this, this);
         }
+            mLocationAccess = new LocationAccess(this, this);
     }
 
     private void logEvent(int type1forBearing2forNote,
