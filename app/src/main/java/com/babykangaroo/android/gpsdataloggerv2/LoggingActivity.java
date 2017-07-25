@@ -79,7 +79,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setSharedPreferences();
-//        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
@@ -256,7 +256,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             String note = adetEventNote.getText().toString();
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "Action");
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
@@ -280,7 +280,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             String note = adetEventNote.getText().toString();
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "Action");
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
