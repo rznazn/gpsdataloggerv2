@@ -59,7 +59,7 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
     @Override
     public MyCursorAdapterEventLog.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.log_event_alert_dialog, parent, false);
+                .inflate(R.layout.list_item_edit_list, parent,false);
 
         return new MyCursorAdapterEventLog.ItemViewHolder(view);
     }

@@ -72,7 +72,7 @@ public class ListProvider extends ContentProvider {
                     null,
                     null,
                     null,
-                    null);
+                     sortOrder);
             cursor.setNotificationUri(getContext().getContentResolver(),
                     ListContract.ListContractEntry.DIRECTORY_CONTENT_URI);
             break;
@@ -83,7 +83,7 @@ public class ListProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        null);
+                        sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(),
                         ListContract.ListContractEntry.ITEMS_CONTENT_URI);
                 break;

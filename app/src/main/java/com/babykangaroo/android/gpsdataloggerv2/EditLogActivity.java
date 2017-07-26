@@ -46,7 +46,7 @@ public class EditLogActivity extends AppCompatActivity implements MyCursorAdapte
                         + ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = '"
                         + PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.current_log), "default") + "'",
                 null,
-                null);
+                ListContract.ListContractEntry.COLUMN_EVENT_TIME + " DESC");
     }
 
     @Override
@@ -61,6 +61,6 @@ public class EditLogActivity extends AppCompatActivity implements MyCursorAdapte
 
     @Override
     public void onItemClick(long itemCursorID) {
-
+        Cursor cursor = getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI +)
     }
 }
