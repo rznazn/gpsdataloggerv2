@@ -18,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -145,10 +146,49 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     @Override
-    public void onItemClick(long itemCursorID, String itemName) {
-        sharedPreferences.edit().putString(getString(R.string.current_log), itemName).apply();
-        Intent intent = new Intent(this, LoggingActivity.class);
-        startActivity(intent);
+    public void onItemClick(final long itemCursorID, final String itemName) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Select option for " + itemName);
+        builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sharedPreferences.edit().putString(getString(R.string.current_log), itemName).apply();
+                Intent intent = new Intent(context, LoggingActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Export to Wam", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                builder1.setMessage("DELETING " + itemName + " PLEASE CONFIRM");
+                builder1.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int logDeleted = context.getContentResolver().delete(ListContract.ListContractEntry.DIRECTORY_CONTENT_URI,
+                                ListContract.ListContractEntry._ID+ " = ? ",
+                                new String[]{String.valueOf(itemCursorID)});
+                        int itemsDeleted = context.getContentResolver().delete(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
+                                ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
+                                new String[]{itemName});
+                        Log.v("FILE MANAGER", logDeleted + " / " + itemsDeleted);
+                    }
+                });
+                builder1.setNegativeButton("cancel", null);
+
+                AlertDialog ad = builder1.create();
+                ad.show();
+            }
+        });
+
+        AlertDialog ad = builder.create();
+        ad.show();
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.util.Date;
 
 public class WamFormater {
 
-    private static final String DEVICE_DESIGNATION = "001";
 
     public WamFormater(){}
 
@@ -21,26 +20,13 @@ public class WamFormater {
      * @param latitude
      * @param longitude
      * @param note
-     * @param trueForEventFalseForNote
      * @return
      * @throws ParseException
      */
 
-    public static String formatToWam(String eventTime, String azimuth, String latitude, String longitude,
-                              String note, boolean trueForEventFalseForNote) throws ParseException {
-        String[] dateTime = eventTime.split(" ");
-        String dateToLog = dateTime[0];
-        String timeToLog = dateTime[1];
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
-        Date eventDate = dateFormat.parse(eventTime);
-        long eventTimeInMil = eventDate.getTime();
-        long eventEndTimeInMil = eventTimeInMil + 10000;
-         String eventEndTimeString =  dateFormat.format(eventEndTimeInMil);
-
-        String[] endDateTime = eventEndTimeString.split(" ");
-        String endDateToLog = endDateTime[0];
-        String endTimeToLog = endDateTime[1];
+    public static String formatAction(String eventTime, String eventEndTime, String trackID, String azimuth,
+                                      String latitude, String longitude, String altitude,
+                                      String note, String actionType) throws ParseException {
 
         String[] latSplit = latitude.split(":");
         String northOrSouth = "N";
@@ -64,39 +50,15 @@ public class WamFormater {
         double wamLonMinutes = Double.valueOf(lonSplit[1]);
         double wamLonFormatted = wamLonDegrees + wamLonMinutes;
 
-        if (trueForEventFalseForNote) {
             return "ACTION\\"
-                    + dateToLog + "\\"
-                    + timeToLog + "\\000\\\\\\" + DEVICE_DESIGNATION + "\\\\\\\\\\\\\\"
-                    +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\TEXT_LINEB_LL\\"
+                    + eventTime + "\\\\\\" + trackID + "\\\\\\\\\\\\\\"
+                    +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\"+ actionType + "\\"
                     +  wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\11\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
+                    + wamLonFormatted + "\\" + eastOrWest + "\\" +altitude + "\\11\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
                     + azimuth + "\\2.5\\\\\\0.1\\"
-                    + endDateToLog + "\\" + endTimeToLog + "\\000\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
-                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n"
-                    + "POINT\\"
-                    + dateToLog + "\\"
-                    + timeToLog + "\\000\\"
-                    + wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
-                    "\\\\F\\\\\\\\\\\\"+ DEVICE_DESIGNATION +"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GDD\\\n";
-        } else {
-            return "ACTION\\"
-                    + dateToLog + "\\"
-                    + timeToLog + "\\000\\\\\\"+ DEVICE_DESIGNATION +"\\\\\\\\\\\\\\"
-                    +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\TEXT_LL\\"
-                    +  wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\11\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
-                    + azimuth + "\\2.5\\\\\\0.1\\"
-                    + endDateToLog + "\\" + endTimeToLog + "\\000\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
-                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n"
-                    + "POINT\\"
-                    + dateToLog + "\\"
-                    + timeToLog + "\\000\\"
-                    + wamLatFormatted + "\\" + northOrSouth + "\\"
-                    + wamLonFormatted + "\\" + eastOrWest + "\\123.0\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
-                    "\\\\F\\\\\\\\\\\\"+ DEVICE_DESIGNATION +"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GDD\\\n";
-        }
+                    + eventEndTime + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" +
+                    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\GDD\n";
+
     }
 
     public static String formatPoint(String time, String trackNumber, String latitude, String longitude
