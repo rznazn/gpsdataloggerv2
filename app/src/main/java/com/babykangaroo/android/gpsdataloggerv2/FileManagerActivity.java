@@ -426,7 +426,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         String storageState = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(storageState)) {
             File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            File dir = new File(root.getAbsolutePath() + "/GTDv2");
+            File dir = new File(root.getAbsolutePath() + "/GTAv2");
             if (!dir.exists()) {
                 dir.mkdirs();
             }
