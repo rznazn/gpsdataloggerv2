@@ -257,8 +257,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
+                            String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
+                            String longitude = Location.convert(location.getLongitude(), Location.FORMAT_MINUTES);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, longitude);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
@@ -281,8 +283,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
-                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
+                            String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
+                            String longitude = Location.convert(location.getLongitude(), Location.FORMAT_MINUTES);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, longitude);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
                             contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());

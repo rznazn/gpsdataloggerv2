@@ -1,5 +1,7 @@
 package com.babykangaroo.android.gpsdataloggerv2;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +13,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +32,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
+import com.example.WamFormater;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.ParseException;
 
 public class FileManagerActivity extends AppCompatActivity implements MyCursorAdapter.ListItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -160,7 +172,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         builder.setNegativeButton("Export to Wam", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                    exportToWam(itemCursorID, itemName);
             }
         });
         builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
@@ -178,6 +190,9 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                                 ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
                                 new String[]{itemName});
                         Log.v("FILE MANAGER", logDeleted + " / " + itemsDeleted);
+                        if (itemName.equals(sharedPreferences.getString(getString(R.string.current_log), "default"))) {
+                            sharedPreferences.edit().remove(getString(R.string.current_log)).apply();
+                        }
                     }
                 });
                 builder1.setNegativeButton("cancel", null);
@@ -344,5 +359,84 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         alertDialog.show();
     }
 
+    void exportToWam(long itemId, String logName){
+        String wholeLog = "";
+        Cursor cursor = context.getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
+                null,
+                ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
+                new String[]{logName},
+                null);
+
+        while (cursor.moveToNext()){
+            Log.v("FILEMANAGER", "BOOKMARK");
+            String keyword = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD));
+            switch (keyword){
+                case "ACTION":
+                    try {
+                        wholeLog = wholeLog + WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "POINT":
+                    wholeLog = wholeLog + WamFormater.formatPoint(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
+                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
+                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
+                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
+                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)));
+                    break;
+            }
+            writeToExternalStorage(this, logName, wholeLog);
+        }
+    }
+    /**
+     * write current readings to file
+     */
+    public static void writeToExternalStorage(Context context, String filename,
+                                              String content) {
+
+        /**
+         * request location permission
+         */
+        ActivityCompat.requestPermissions((Activity) context,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                9989);
+
+        FileOutputStream fos;
+
+        String storageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(storageState)) {
+            File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File dir = new File(root.getAbsolutePath() + "/GTDv2");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File log = new File(dir, filename + ".txt");
+
+            try {
+                    fos = new FileOutputStream(log);
+                PrintWriter pw = new PrintWriter(fos);
+                pw.write(content);
+                pw.flush();
+                pw.close();
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(context, "External Storage Unavailable", Toast.LENGTH_LONG).show();
+        }
+    }
 
 }
