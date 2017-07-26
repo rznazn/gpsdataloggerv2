@@ -254,7 +254,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
+                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
                             String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
@@ -280,7 +280,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
+                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
                             String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);

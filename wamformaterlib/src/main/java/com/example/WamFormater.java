@@ -90,16 +90,6 @@ public class WamFormater {
                 + wamLatFormatted + "\\" + northOrSouth + "\\"
                 + wamLonFormatted + "\\" + eastOrWest + "\\" + altitude +"\\0.0\\0.0\\MSL\\\\\\\\JADeMobile\\\\L" +
                 "\\\\F\\\\\\\\\\\\"+ trackNumber +"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\RADAR\\GTA\\\n";
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-//        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, "001");
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, location.getLatitude());
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, location.getLongitude());
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
-//        contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
     }
 }
 
