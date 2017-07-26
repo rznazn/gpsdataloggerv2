@@ -12,6 +12,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -26,13 +27,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.example.WamFormater;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,6 +60,9 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     private Switch swMinimiedTracking;
     private TextView tvAdminPassword;
 
+    private FrameLayout loadingIndicatorView;
+    private LinearLayout mainContent;
+
     private SharedPreferences sharedPreferences;
 
     private static final int LOADER_ID = 9998;
@@ -67,6 +74,8 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         setContentView(R.layout.activity_file_manager);
         context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        loadingIndicatorView = (FrameLayout) findViewById(R.id.cp_loading);
+        mainContent = (LinearLayout) findViewById(R.id.ll_main_content);
         etNewEntry = (EditText) findViewById(R.id.et_new_list);
         rvLogList = (RecyclerView) findViewById(R.id.rv_list_directory);
         mAdapter = new MyCursorAdapter(this, this, sharedPreferences);
@@ -172,7 +181,9 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         builder.setNegativeButton("Export to Wam", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                    exportToWam(itemCursorID, itemName);
+                showLoading();
+                WriteToWamAsyncTask asyncTask = new WriteToWamAsyncTask();
+                asyncTask.execute(itemName);
             }
         });
         builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
@@ -359,7 +370,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         alertDialog.show();
     }
 
-    void exportToWam(long itemId, String logName){
+    void exportToWam(String logName){
         String wholeLog = "";
         Cursor cursor = context.getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
                 null,
@@ -437,6 +448,30 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         } else {
             Toast.makeText(context, "External Storage Unavailable", Toast.LENGTH_LONG).show();
         }
+    }
+
+    class WriteToWamAsyncTask extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            exportToWam(strings[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            showMain();
+        }
+    }
+
+    void showLoading(){
+        loadingIndicatorView.setVisibility(View.VISIBLE);
+        mainContent.setVisibility(View.INVISIBLE);
+    }
+    void showMain(){
+        loadingIndicatorView.setVisibility(View.INVISIBLE);
+        mainContent.setVisibility(View.VISIBLE);
     }
 
 }

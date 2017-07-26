@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.babykangaroo.android.gpsdataloggerv2.FileManagerActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <FrameLayout
+        android:id="@+id/cp_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_gravity="center"
+        app:indicatorColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="BallPulseIndicator"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="writing file. please wait."/>
+    </FrameLayout>
+<LinearLayout
+    android:id="@+id/ll_main_content"
     android:padding="@dimen/default_padding_size"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.babykangaroo.android.gpsdataloggerv2.FileManagerActivity">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -183,3 +206,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</FrameLayout>
