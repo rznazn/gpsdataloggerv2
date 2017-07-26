@@ -77,6 +77,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mContext = this;
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!sharedPreferences.contains(getString(R.string.current_log))){
+            Intent intent = new Intent(this, FileManagerActivity.class);
+            startActivity(intent);
+        }
         setSharedPreferences();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
