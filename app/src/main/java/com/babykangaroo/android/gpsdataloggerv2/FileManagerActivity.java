@@ -56,7 +56,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         etNewEntry = (EditText) findViewById(R.id.et_new_list);
         rvLogList = (RecyclerView) findViewById(R.id.rv_list_directory);
-        mAdapter = new MyCursorAdapter(this, this);
+        mAdapter = new MyCursorAdapter(this, this, sharedPreferences);
         rvLogList.setAdapter(mAdapter);
         ivEnterNewEntry = (ImageView) findViewById(R.id.iv_add_new_entry);
         /**

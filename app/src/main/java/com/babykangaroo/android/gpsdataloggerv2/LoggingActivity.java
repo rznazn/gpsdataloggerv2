@@ -39,7 +39,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private TextView tvCurrentLogName;
     private TextView tvLogNote;
     private TextView tvEditLog;
-    private TextView tvExportToWam;
     private ImageView ivAdminSettings;
 
     private LocationAccess mLocationAccess;
@@ -101,13 +100,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             }
         });
 
-        tvExportToWam = (TextView) findViewById(R.id.tv_print_to_wam);
-        tvExportToWam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         tvLogNote = (TextView) findViewById(R.id.tv_log_note);
         tvLogNote.setOnClickListener(new View.OnClickListener() {

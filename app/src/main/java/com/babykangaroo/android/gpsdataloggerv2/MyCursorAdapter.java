@@ -1,6 +1,7 @@
 package com.babykangaroo.android.gpsdataloggerv2;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
     private Cursor mCursor;
     private Context mContext;
     private ListItemClickListener mClickListener;
+    private SharedPreferences mSharedPreferences;
 
 
     /** interface for list item CLicks */
@@ -33,9 +35,10 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
     /**
      * public constructor for use by activities
      */
-    public MyCursorAdapter(Context context, ListItemClickListener clickListener) {
+    public MyCursorAdapter(Context context, ListItemClickListener clickListener, SharedPreferences sharedPreferences) {
         this.mContext = context;
         this.mClickListener = clickListener;
+        mSharedPreferences = sharedPreferences;
     }
 
     /**
@@ -73,6 +76,11 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
         mCursor.moveToPosition(position);
         final String itemName1 = mCursor.getString(mCursor.
                 getColumnIndex(ListContract.ListContractEntry.COLUMN_LOG_NAME));
+        if (itemName1.equals(mSharedPreferences.getString(mContext.getString(R.string.current_log), "default"))){
+            holder.tvLogName.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+        }else{
+            holder.tvLogName.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+        }
         holder.tvLogName.setText(itemName1);
 
     }

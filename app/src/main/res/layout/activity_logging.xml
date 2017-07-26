@@ -80,27 +80,13 @@
             android:layout_width="@dimen/default_button_height"
             android:layout_height="@dimen/default_button_height"
             app:layout_constraintLeft_toRightOf="@id/tv_log_note"
-            app:layout_constraintRight_toLeftOf="@+id/tv_print_to_wam"
+            app:layout_constraintRight_toLeftOf="parent"
             android:layout_centerInParent="true"
             android:layout_margin="12dp"
             android:layout_marginTop="@dimen/default_padding_size"
             android:background="@android:color/holo_orange_light"
             android:gravity="center"
             android:text="edit\nlog"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size" />
-        <TextView
-            android:id="@+id/tv_print_to_wam"
-            android:layout_width="@dimen/default_button_height"
-            android:layout_height="@dimen/default_button_height"
-            app:layout_constraintLeft_toRightOf="@+id/tv_edit_log"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_centerInParent="true"
-            android:layout_margin="12dp"
-            android:layout_marginTop="@dimen/default_padding_size"
-            android:background="@android:color/holo_green_light"
-            android:gravity="center"
-            android:text="export to wam"
             android:textColor="@android:color/black"
             android:textSize="@dimen/default_text_size" />
     </android.support.constraint.ConstraintLayout>
