@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
@@ -28,7 +27,7 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
 
     /** interface for list item CLicks */
     public interface ListItemClickListener {
-        void onItemClick(long itemCursorID);
+        void onItemClick(long itemCursorID, String summary, String note);
     }
 
     /**
@@ -79,7 +78,7 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
 
             holder.tvEventData.setText(eventSummary);
 
-            holder.etNote.setText(mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE)));
+            holder.tvNote.setText(mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE)));
         }
 
     }
@@ -101,11 +100,11 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
      */
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView tvEventData;
-        public TextView etNote;
+        public TextView tvNote;
         public ItemViewHolder(View itemView) {
             super(itemView);
             tvEventData = (TextView) itemView.findViewById(R.id.tv_event_summary);
-            etNote = (TextView) itemView.findViewById(R.id.et_event_note);
+            tvNote = (TextView) itemView.findViewById(R.id.et_event_note);
             itemView.setOnClickListener(this);
         }
 
@@ -113,7 +112,9 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
         public void onClick(View v) {
             mCursor.moveToPosition(getAdapterPosition());
             long itemCursorID = mCursor.getLong(mCursor.getColumnIndex(BaseColumns._ID));
-            mClickListener.onItemClick(itemCursorID);
+            String summary = tvEventData.getText().toString();
+            String note = tvNote.getText().toString();
+            mClickListener.onItemClick(itemCursorID, summary, note);
         }
     }
 }
