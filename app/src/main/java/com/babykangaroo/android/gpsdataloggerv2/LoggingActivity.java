@@ -10,6 +10,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
@@ -30,7 +31,24 @@ import com.babykangaroo.android.mylocationlibrary.LocationAccess;
 import com.babykangaroo.android.myudpdatagramlib.UdpDatagram;
 import com.example.WamFormater;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Date;
+
+import edu.nps.moves.dis.EntityID;
+import edu.nps.moves.dis.EntityStatePdu;
+import edu.nps.moves.dis.EntityType;
+import edu.nps.moves.dis.FirePdu;
+import edu.nps.moves.dis.Vector3Double;
+import edu.nps.moves.disutil.CoordinateConversions;
+import edu.nps.moves.disutil.DisTime;
 
 public class LoggingActivity extends AppCompatActivity implements LocationAccess.LocationUpdateListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -44,6 +62,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private LocationAccess mLocationAccess;
     private Location mLastGivenLocation;
     private Context mContext;
+    private DisTime disTime;
 
     private SharedPreferences sharedPreferences;
     private String trackId;
@@ -60,7 +79,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private int mBearingMagnetic;
     private boolean adWasDismissed;
 
-    private UdpDatagram mDatagram;
+//    private UdpDatagram mDatagram;
+    private DatagramSocket datagramSocket;
     private boolean isActive;
 
     @Override
@@ -81,10 +101,18 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             Intent intent = new Intent(this, FileManagerActivity.class);
             startActivity(intent);
         }
+
+        try {
+            datagramSocket = new DatagramSocket();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        disTime = DisTime.getInstance();
         setSharedPreferences();
         mLocationAccess = new LocationAccess(this, this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
+//        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
@@ -133,6 +161,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             mLocationAccess.stopUpdates();
             return;
         }
+
         mLastGivenLocation = location;
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
         if (lastUpdate+(loggingInterval*1000)> System.currentTimeMillis()){return;}
@@ -165,9 +194,59 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected() && liveUpdates) {
-            String wamDataPack = WamFormater.formatPoint(eventTime,trackId,latitude,
-                    longitude,altitude);
-            mDatagram.sendPacket(wamDataPack);
+
+            EntityStatePdu espdu = new EntityStatePdu();
+
+            espdu.setExerciseID((short)1);
+
+            String[] id = trackId.split("(?!^)");
+            EntityID eid = espdu.getEntityID();
+            eid.setSite(Integer.valueOf(id[0]));
+            eid.setApplication(Integer.valueOf(id[1]));
+            eid.setEntity(Integer.valueOf(id[2]));
+
+            EntityType entityType = espdu.getEntityType();
+            entityType.setEntityKind((short)1);      // Platform (vs lifeform, munition, sensor, etc.)
+            entityType.setCountry(225);              // USA
+            entityType.setDomain((short)1);          // Land (vs air, surface, subsurface, space)
+            entityType.setCategory((short)1);        // Tank
+            entityType.setSubcategory((short)1);     // M1 Abrams
+            entityType.setSpec((short)3);
+
+            int ts = disTime.getDisAbsoluteTimestamp();
+            espdu.setTimestamp(ts);
+
+            double disCoordinates[] = CoordinateConversions.
+                    getXYZfromLatLonDegrees(location.getLatitude(), location.getLongitude(), location.getAltitude());
+            Vector3Double locationespdu = espdu.getEntityLocation();
+            locationespdu.setX(disCoordinates[0]);
+            locationespdu.setY(disCoordinates[1]);
+            locationespdu.setZ(disCoordinates[2]);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(baos);
+            espdu.marshal(dos);
+
+            // The byte array here is the packet in DIS format. We put that into a
+            // datagram and send it.
+            byte[] data = baos.toByteArray();
+            AsyncTask pduSendTask = new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] objects) { try {
+                    byte[] data = (byte[]) objects[0];
+                    datagramSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
+                            destinationPort));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                    return null;
+                }
+            };
+           pduSendTask.execute(data);
+
+//            String wamDataPack = WamFormater.formatPoint(eventTime,trackId,latitude,
+//                    longitude,altitude);
+//            mDatagram.sendPacket(wamDataPack);
         }
     }
 
@@ -345,11 +424,13 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);
         minimizedTracking = sharedPreferences.getBoolean(getString(R.string.minimized_tracking), false);
-        sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password));
+//        sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password));
+
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         setSharedPreferences();
     }
+
 }
