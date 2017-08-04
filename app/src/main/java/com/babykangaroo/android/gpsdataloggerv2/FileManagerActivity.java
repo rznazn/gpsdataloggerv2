@@ -371,7 +371,6 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void exportToWam(String logName){
-        String wholeLog = "";
         Cursor cursor = context.getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
                 null,
                 ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
@@ -379,12 +378,12 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                 null);
 
         while (cursor.moveToNext()){
-            Log.v("FILEMANAGER", "BOOKMARK");
             String keyword = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD));
+            String log = "";
             switch (keyword){
                 case "ACTION":
                     try {
-                        wholeLog = wholeLog + WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
+                        log = WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)),
@@ -398,14 +397,15 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                     }
                     break;
                 case "POINT":
-                    wholeLog = wholeLog + WamFormater.formatPoint(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
+                    log = WamFormater.formatPoint(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)));
                     break;
             }
-            writeToExternalStorage(this, logName, wholeLog);
+            writeToExternalStorage(this, logName, log);
+            Log.v("FILEMANAGER", log);
         }
     }
     /**
@@ -433,7 +433,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             File log = new File(dir, filename + ".txt");
 
             try {
-                    fos = new FileOutputStream(log);
+                    fos = new FileOutputStream(log, true);
                 PrintWriter pw = new PrintWriter(fos);
                 pw.write(content);
                 pw.flush();
