@@ -232,14 +232,22 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             byte[] data = baos.toByteArray();
             AsyncTask pduSendTask = new AsyncTask() {
                 @Override
-                protected Object doInBackground(Object[] objects) { try {
+                protected Object doInBackground(Object[] objects) {
+                    try {
                     byte[] data = (byte[]) objects[0];
                     datagramSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
                             destinationPort));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
                 }
             };
            pduSendTask.execute(data);

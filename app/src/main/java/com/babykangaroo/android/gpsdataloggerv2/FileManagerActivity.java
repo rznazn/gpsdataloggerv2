@@ -279,7 +279,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 int interval = Integer.valueOf(etInterval.getText().toString());
-                tvTrackId.setText(String.valueOf(interval));
+                tvLogInterval.setText(String.valueOf(interval));
                 sharedPreferences.edit().putInt(getString(R.string.log_interval), interval).apply();
             }
         });
