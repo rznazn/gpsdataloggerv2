@@ -82,6 +82,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             startActivity(intent);
         }
         setSharedPreferences();
+        mLocationAccess = new LocationAccess(this, this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
@@ -130,7 +131,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
          */
         if (!minimizedTracking && !isActive){
             mLocationAccess.stopUpdates();
-            mLocationAccess = null;
             return;
         }
         mLastGivenLocation = location;
@@ -188,7 +188,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         if (!minimizedTracking) {
             try {
                 mLocationAccess.stopUpdates();
-                mLocationAccess = null;
             }catch (NullPointerException e){
             }
         }
@@ -201,11 +200,10 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         isActive = true;
         try {
             mLocationAccess.stopUpdates();
-            mLocationAccess = null;
         }catch (NullPointerException e) {
 
         }
-            mLocationAccess = new LocationAccess(this, this);
+        mLocationAccess.startLocationUpdates();
     }
 
     private void logEvent(int type1forBearing2forNote,

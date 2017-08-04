@@ -132,7 +132,6 @@ public class LocationAccess implements SensorEventListener{
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        startLocationUpdates();
 
         /**
          * set the sensors and sensor manager
