@@ -12,13 +12,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -28,8 +25,6 @@ import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.babykangaroo.android.mylocationlibrary.LocationAccess;
-import com.babykangaroo.android.myudpdatagramlib.UdpDatagram;
-import com.example.WamFormater;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -37,7 +32,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -45,7 +39,6 @@ import java.util.Date;
 import edu.nps.moves.dis.EntityID;
 import edu.nps.moves.dis.EntityStatePdu;
 import edu.nps.moves.dis.EntityType;
-import edu.nps.moves.dis.FirePdu;
 import edu.nps.moves.dis.Vector3Double;
 import edu.nps.moves.disutil.CoordinateConversions;
 import edu.nps.moves.disutil.DisTime;
@@ -77,7 +70,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private long mTimeCorrection;
     private long mAzimuthUpdateTimeReference;
     private int mBearingMagnetic;
-    private boolean adWasDismissed;
+    private boolean adConfirmed;
 
 //    private UdpDatagram mDatagram;
     private DatagramSocket datagramSocket;
@@ -175,6 +168,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         ContentValues contentValues = new ContentValues();
         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
+        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
         contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
 
@@ -293,12 +287,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mLocationAccess.startLocationUpdates();
     }
 
-    private void logEvent(int type1forBearing2forNote,
+    private void logEvent(final int type1forBearing2forNote,
                           final Location location,
                           final long gpsCorrectedTime,
                           @Nullable final Integer azimuth) {
         if (mLastGivenLocation != null) {
-            adWasDismissed = false;
+            adConfirmed = false;
             java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
             final String eventTime = dateFormat.format(new Date(gpsCorrectedTime));
             final String eventTimeEnd = dateFormat.format(new Date(gpsCorrectedTime + 10000));
@@ -315,10 +309,58 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    if (!adWasDismissed) {
-                        /**
-                         * TODO implement later
-                          */
+                    if (!adConfirmed) {
+                        String note;
+                        ContentValues contentValues;
+                        String latitude;
+                        String longitude;
+                        switch (type1forBearing2forNote) {
+                            case 1:
+                                        note = adetEventNote.getText().toString();
+                                        contentValues = new ContentValues();
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "TRUE");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
+                                        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
+                                        latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
+                                        longitude = Location.convert(location.getLongitude(), Location.FORMAT_MINUTES);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, longitude);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG, azimuth);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
+                                        getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+
+                                break;
+                            case 2:
+                                        note = adetEventNote.getText().toString();
+                                        contentValues = new ContentValues();
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "TRUE");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
+                                        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
+                                        latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
+                                        longitude = Location.convert(location.getLongitude(), Location.FORMAT_MINUTES);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE, longitude);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE, location.getAltitude());
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_FIGURE_COLOR, "11");
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_FROM_LAST, location.getBearing());
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
+                                        getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+
+
+                                break;
+                        }
                     }
                 }
             });
@@ -333,11 +375,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     builder.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            adWasDismissed = true;
+                            adConfirmed = true;
                             String note = adetEventNote.getText().toString();
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
@@ -359,11 +402,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     builder.setPositiveButton("confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            adWasDismissed = true;
+                            adConfirmed = true;
                             String note = adetEventNote.getText().toString();
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
                             contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);

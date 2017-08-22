@@ -78,7 +78,14 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
 
             holder.tvEventData.setText(eventSummary);
 
-            holder.tvNote.setText(mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE)));
+            String note = mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE));
+            if (mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED)).equals("TRUE")){
+                if (!note.contains("*cancelled*")){
+                    note = "*cancelled*" + note;
+                }
+            }
+
+            holder.tvNote.setText(note);
         }
 
     }

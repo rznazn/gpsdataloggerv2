@@ -380,6 +380,12 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         while (cursor.moveToNext()){
             String keyword = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD));
             String log = "";
+            String note = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE));
+            if (cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED)).equals("TRUE")){
+                if (!note.contains("*cancelled*")){
+                    note = "*cancelled*" + note;
+                }
+            }
             switch (keyword){
                 case "ACTION":
                     try {
@@ -390,7 +396,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)),
-                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE)),
+                                note,
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE)));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -405,7 +411,6 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                     break;
             }
             writeToExternalStorage(this, logName, log);
-            Log.v("FILEMANAGER", log);
         }
     }
     /**
