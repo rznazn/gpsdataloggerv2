@@ -83,6 +83,8 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
                 if (!note.contains("*cancelled*")){
                     note = "*cancelled*" + note;
                 }
+            }else  if (!note.contains("*confirmed*")){
+                note = "*confirmed*" + note;
             }
 
             holder.tvNote.setText(note);

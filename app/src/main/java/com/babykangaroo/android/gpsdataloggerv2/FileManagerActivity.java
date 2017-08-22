@@ -380,15 +380,18 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         while (cursor.moveToNext()){
             String keyword = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD));
             String log = "";
-            String note = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE));
-            if (cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED)).equals("TRUE")){
-                if (!note.contains("*cancelled*")){
-                    note = "*cancelled*" + note;
-                }
-            }
+
             switch (keyword){
                 case "ACTION":
                     try {
+                        String note = cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE));
+                        if (cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED)).equals("TRUE")){
+                            if (!note.contains("*cancelled*")){
+                                note = "*cancelled*" + note;
+                            }
+                        }else  if (!note.contains("*confirmed*")){
+                            note = "*confirmed*" + note;
+                        }
                         log = WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),

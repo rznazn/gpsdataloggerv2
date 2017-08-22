@@ -34,8 +34,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import edu.nps.moves.dis.ArticulationParameter;
 import edu.nps.moves.dis.EntityID;
 import edu.nps.moves.dis.EntityStatePdu;
 import edu.nps.moves.dis.EntityType;
@@ -245,10 +248,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 }
             };
            pduSendTask.execute(data);
-
-//            String wamDataPack = WamFormater.formatPoint(eventTime,trackId,latitude,
-//                    longitude,altitude);
-//            mDatagram.sendPacket(wamDataPack);
         }
     }
 
@@ -293,6 +292,89 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                           @Nullable final Integer azimuth) {
         if (mLastGivenLocation != null) {
             adConfirmed = false;
+
+            if (type1forBearing2forNote == 1) {
+                ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnected() && liveUpdates) {
+
+                    List<ArticulationParameter> articulationParameters = new ArrayList<ArticulationParameter>();
+                    ArticulationParameter apRange = new ArticulationParameter();
+                    apRange.setParameterTypeDesignator((short) 941);
+                    apRange.setParameterValue(2500);
+                    articulationParameters.add(apRange);
+                    ArticulationParameter apBearing = new ArticulationParameter();
+                    apBearing.setParameterTypeDesignator((short) 940);
+                    int newAzimuth;
+                    if (azimuth > 180) {
+                        newAzimuth = azimuth - 360;
+                    } else {
+                        newAzimuth = azimuth;
+                    }
+                    apBearing.setParameterValue(newAzimuth * (Math.PI / 180));
+
+                    EntityStatePdu espdu = new EntityStatePdu();
+
+                    espdu.setNumberOfArticulationParameters((byte) 2);
+                    espdu.setArticulationParameters(articulationParameters);
+
+                    espdu.setExerciseID((short) 1);
+
+                    String[] id = trackId.split("(?!^)");
+                    EntityID eid = espdu.getEntityID();
+                    eid.setSite(Integer.valueOf(id[0]));
+                    eid.setApplication(Integer.valueOf(id[1]));
+                    eid.setEntity(Integer.valueOf(id[2]));
+
+                    EntityType entityType = espdu.getEntityType();
+                    entityType.setEntityKind((short) 1);      // Platform (vs lifeform, munition, sensor, etc.)
+                    entityType.setCountry(225);              // USA
+                    entityType.setDomain((short) 1);          // Land (vs air, surface, subsurface, space)
+                    entityType.setCategory((short) 1);        // Tank
+                    entityType.setSubcategory((short) 1);     // M1 Abrams
+                    entityType.setSpec((short) 3);
+
+                    int ts = disTime.getDisAbsoluteTimestamp();
+                    espdu.setTimestamp(ts);
+
+                    double disCoordinates[] = CoordinateConversions.
+                            getXYZfromLatLonDegrees(location.getLatitude(), location.getLongitude(), location.getAltitude());
+                    Vector3Double locationespdu = espdu.getEntityLocation();
+                    locationespdu.setX(disCoordinates[0]);
+                    locationespdu.setY(disCoordinates[1]);
+                    locationespdu.setZ(disCoordinates[2]);
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    DataOutputStream dos = new DataOutputStream(baos);
+                    espdu.marshal(dos);
+
+                    // The byte array here is the packet in DIS format. We put that into a
+                    // datagram and send it.
+                    byte[] data = baos.toByteArray();
+                    AsyncTask pduSendTask = new AsyncTask() {
+                        @Override
+                        protected Object doInBackground(Object[] objects) {
+                            try {
+                                byte[] data = (byte[]) objects[0];
+                                datagramSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
+                                        destinationPort));
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Object o) {
+                            super.onPostExecute(o);
+                        }
+                    };
+                    pduSendTask.execute(data);
+                }
+            }
+
             java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
             final String eventTime = dateFormat.format(new Date(gpsCorrectedTime));
             final String eventTimeEnd = dateFormat.format(new Date(gpsCorrectedTime + 10000));
@@ -335,6 +417,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                                         getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
+
+
 
                                 break;
                             case 2:
