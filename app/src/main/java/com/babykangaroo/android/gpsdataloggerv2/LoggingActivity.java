@@ -77,8 +77,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private int mBearingMagnetic;
     private boolean adConfirmed;
 
-//    private UdpDatagram mDatagram;
-    private DatagramSocket datagramSocket;
     private MulticastSocket multicastSocket;
     private boolean isActive;
 
@@ -102,7 +100,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         }
 
         try {
-            datagramSocket = new DatagramSocket();
             multicastSocket = new MulticastSocket();
             multicastSocket.setTimeToLive(128);
         } catch (SocketException e) {
@@ -115,7 +112,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         setSharedPreferences();
         mLocationAccess = new LocationAccess(this, this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-//        mDatagram = new UdpDatagram(this, destinationIp, destinationPort);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
 
@@ -239,7 +235,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 protected Object doInBackground(Object[] objects) {
                     try {
                     byte[] data = (byte[]) objects[0];
-                    //datagramSocket.send();
                         multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
                                 destinationPort));
                 } catch (UnknownHostException e) {
@@ -366,7 +361,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                         protected Object doInBackground(Object[] objects) {
                             try {
                                 byte[] data = (byte[]) objects[0];
-                                datagramSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
+                               multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
                                         destinationPort));
                             } catch (UnknownHostException e) {
                                 e.printStackTrace();
@@ -570,7 +565,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         destinationPort = Integer.valueOf(sharedPreferences.getString(getString(R.string.destination_port), getString(R.string.default_port)));
         liveUpdates = sharedPreferences.getBoolean(getString(R.string.live_updates), false);
         minimizedTracking = sharedPreferences.getBoolean(getString(R.string.minimized_tracking), false);
-//        sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password));
 
     }
 
