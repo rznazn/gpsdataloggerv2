@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -77,6 +79,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
 //    private UdpDatagram mDatagram;
     private DatagramSocket datagramSocket;
+    private MulticastSocket multicastSocket;
     private boolean isActive;
 
     @Override
@@ -100,7 +103,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         try {
             datagramSocket = new DatagramSocket();
+            multicastSocket = new MulticastSocket();
+            multicastSocket.setTimeToLive(128);
         } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -232,8 +239,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 protected Object doInBackground(Object[] objects) {
                     try {
                     byte[] data = (byte[]) objects[0];
-                    datagramSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
-                            destinationPort));
+                    //datagramSocket.send();
+                        multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
+                                destinationPort));
                 } catch (UnknownHostException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -300,18 +308,20 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
                     List<ArticulationParameter> articulationParameters = new ArrayList<ArticulationParameter>();
                     ArticulationParameter apRange = new ArticulationParameter();
-                    apRange.setParameterTypeDesignator((short) 941);
+                    apRange.setParameterType(941);
                     apRange.setParameterValue(2500);
                     articulationParameters.add(apRange);
                     ArticulationParameter apBearing = new ArticulationParameter();
-                    apBearing.setParameterTypeDesignator((short) 940);
+                    apBearing.setParameterType(940);
                     int newAzimuth;
                     if (azimuth > 180) {
                         newAzimuth = azimuth - 360;
                     } else {
                         newAzimuth = azimuth;
                     }
-                    apBearing.setParameterValue(newAzimuth * (Math.PI / 180));
+                    double radians = newAzimuth * (Math.PI / 180);
+                    apBearing.setParameterValue(radians);
+                    articulationParameters.add(apBearing);
 
                     EntityStatePdu espdu = new EntityStatePdu();
 
