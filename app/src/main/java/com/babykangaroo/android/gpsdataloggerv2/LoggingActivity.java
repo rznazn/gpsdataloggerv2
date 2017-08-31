@@ -573,4 +573,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         setSharedPreferences();
     }
 
+    @Override
+    public void onBackPressed() {
+        //do nothing
+    }
 }
