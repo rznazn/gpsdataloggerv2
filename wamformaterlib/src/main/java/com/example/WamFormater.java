@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jdk.nashorn.internal.runtime.logging.Logger;
+
 /**
  * Created by sport on 4/28/2017.
  */
@@ -50,7 +52,13 @@ public class WamFormater {
         double wamLonMinutes = Double.valueOf(lonSplit[1]);
         double wamLonFormatted = wamLonDegrees + wamLonMinutes;
 
-            return "ACTION\\"
+        String[] timeParts = eventTime.split("\\\\");
+        String bookmark = timeParts[0].substring(0,4) + ":" + timeParts[0].substring(4,6) + ":" + timeParts[0].substring(6,8) + " "
+                    + timeParts[1] .substring(0,2) + ":" + timeParts[1].substring(2,4) + ":" + timeParts[1].substring(4,6)
+                    + " " + note;
+
+            return bookmark + "\n" +
+                    "ACTION\\"
                     + eventTime + "\\\\\\" + trackID + "\\\\\\\\\\\\\\"
                     +  note + "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\1\\"+ actionType + "\\"
                     +  wamLatFormatted + "\\" + northOrSouth + "\\"

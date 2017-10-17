@@ -423,7 +423,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                                               String content) {
 
         /**
-         * request location permission
+         * request storage permission
          */
         ActivityCompat.requestPermissions((Activity) context,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
