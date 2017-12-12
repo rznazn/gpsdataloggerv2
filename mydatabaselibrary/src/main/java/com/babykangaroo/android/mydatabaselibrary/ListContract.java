@@ -36,7 +36,7 @@ public class ListContract {
         public static final String COLUMN_EVENT_KEYWORD = "keyword";
         public static final String COLUMN_EVENT_WAS_CANCELLED = "was_cancelled";
         public static final String COLUMN_EVENT_TIME = "event_time";
-        public static final String COlUMN_TRACK_NUMBER = "track_number";
+        public static final String COLUMN_TRACK_NUMBER = "track_number";
         public static final String COLUMN_EVENT_DIRECTIVE = "action_name";
         public static final String COLUMN_EVENT_LATITUDE = "event_latitude";
         public static final String COLUMN_EVENT_LONGITUDE = "event_longitude";

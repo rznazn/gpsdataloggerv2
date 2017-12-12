@@ -21,8 +21,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,7 +34,6 @@ import android.widget.Toast;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.example.WamFormater;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -394,7 +391,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                         }
                         log = WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
-                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
                                 cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
@@ -407,7 +404,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                     break;
                 case "POINT":
                     log = WamFormater.formatPoint(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
-                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER)),
+                            cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)));

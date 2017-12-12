@@ -16,7 +16,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -31,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
@@ -39,6 +37,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import edu.nps.moves.dis.ArticulationParameter;
 import edu.nps.moves.dis.EntityID;
@@ -79,6 +78,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
     private MulticastSocket multicastSocket;
     private boolean isActive;
+    private java.text.SimpleDateFormat dateFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +149,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             }
         });
 
+        dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     @Override
@@ -168,7 +170,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         long gpsTime = location.getTime();
         String eventTime;
         String eventTimeEnd;
-        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
         eventTime = dateFormat.format(new Date(gpsTime));
         eventTimeEnd = dateFormat.format(new Date(gpsTime + 10000));
         ContentValues contentValues = new ContentValues();
@@ -176,7 +177,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+        contentValues.put(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER, trackId);
 
         String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE, latitude);
@@ -380,7 +381,6 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                 }
             }
 
-            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd\\HHmmss\\SSS");
             final String eventTime = dateFormat.format(new Date(gpsCorrectedTime));
             final String eventTimeEnd = dateFormat.format(new Date(gpsCorrectedTime + 10000));
 
@@ -409,7 +409,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "TRUE");
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                                        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER, trackId);
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
                                         latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
@@ -433,7 +433,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "TRUE");
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                                        contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                                        contentValues.put(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER, trackId);
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
                                         latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
@@ -471,7 +471,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LINEB_LL");
                             String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
@@ -498,7 +498,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "ACTION");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED, "FALSE");
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_TIME, eventTime);
-                            contentValues.put(ListContract.ListContractEntry.COlUMN_TRACK_NUMBER, trackId);
+                            contentValues.put(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER, trackId);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_NOTE, note);
                             contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE, "TEXT_LL");
                             String latitude = Location.convert(location.getLatitude(), Location.FORMAT_MINUTES);
