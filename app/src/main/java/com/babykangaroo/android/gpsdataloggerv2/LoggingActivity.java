@@ -79,15 +79,34 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private MulticastSocket multicastSocket;
     private boolean isActive;
     private java.text.SimpleDateFormat dateFormat;
+    private class PduSendTask extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            try {
+                byte[] data = (byte[]) objects[0];
+                multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
+                        destinationPort));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logging);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        /**
-         * disable screen TimeOut
-         */
+        /**disable screen TimeOut
+         **/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_logging);
 
@@ -231,27 +250,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             // The byte array here is the packet in DIS format. We put that into a
             // datagram and send it.
             byte[] data = baos.toByteArray();
-            AsyncTask pduSendTask = new AsyncTask() {
-                @Override
-                protected Object doInBackground(Object[] objects) {
-                    try {
-                    byte[] data = (byte[]) objects[0];
-                        multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
-                                destinationPort));
-                } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
 
-                @Override
-                protected void onPostExecute(Object o) {
-                    super.onPostExecute(o);
-                }
-            };
-           pduSendTask.execute(data);
+            AsyncTask currentTask = new PduSendTask();
+            currentTask.execute(data);
         }
     }
 
@@ -357,27 +358,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     // The byte array here is the packet in DIS format. We put that into a
                     // datagram and send it.
                     byte[] data = baos.toByteArray();
-                    AsyncTask pduSendTask = new AsyncTask() {
-                        @Override
-                        protected Object doInBackground(Object[] objects) {
-                            try {
-                                byte[] data = (byte[]) objects[0];
-                               multicastSocket.send(new DatagramPacket(data, data.length, InetAddress.getByName(destinationIp),
-                                        destinationPort));
-                            } catch (UnknownHostException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }
 
-                        @Override
-                        protected void onPostExecute(Object o) {
-                            super.onPostExecute(o);
-                        }
-                    };
-                    pduSendTask.execute(data);
+                    AsyncTask currentTask = new PduSendTask();
+                    currentTask.execute(data);
                 }
             }
 
@@ -386,11 +369,11 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
             final View adLayout = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
             final TextView adtvEventSummary = (TextView) adLayout.findViewById(R.id.tv_event_summary);
-            adtvEventSummary.setText("Event time: " + eventTime +
+            String text = "Event time: " + eventTime +
                     "\nAzimuth: " + azimuth +
                     "\nLat: " + location.getLatitude() +
-                    "\nLong: " + location.getLongitude()
-            );
+                    "\nLong: " + location.getLongitude();
+            adtvEventSummary.setText(text);
             final EditText adetEventNote = (EditText) adLayout.findViewById(R.id.et_event_note);
             AlertDialog.Builder builder = new AlertDialog.Builder(this); builder.setView(adLayout);
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
