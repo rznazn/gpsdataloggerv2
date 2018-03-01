@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -85,11 +86,15 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             @Override
             public void onClick(View v) {
                 String itemName = etNewEntry.getText().toString();
-                if (!itemName.matches("")) {
+                if (!itemName.matches("") && !itemName.contains("/")) {
                     ContentValues cv = new ContentValues();
                     cv.put(ListContract.ListContractEntry.COLUMN_LOG_NAME, itemName);
                     Uri uri = getContentResolver().insert(ListContract.ListContractEntry.DIRECTORY_CONTENT_URI, cv);
                     etNewEntry.setText("");
+                } else {
+                    Toast toast = Toast.makeText(context, "invalid log name", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP,0 ,0);
+                    toast.show();
                 }
             }
         });
@@ -312,7 +317,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     void setDestinationPort(){
         final View adView = getLayoutInflater().inflate(R.layout.log_event_alert_dialog, null);
         final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
-        tvMessage.setText("Enter Destinaton IP");
+        tvMessage.setText("Enter Destinaton Port");
         final EditText etPort = (EditText) adView.findViewById(R.id.et_event_note);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(adView);
