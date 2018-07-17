@@ -368,6 +368,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
     }
 
     void exportToWam(String logName){
+        String confirmedFileName = logName.contains("/") ? "invalid log name":logName;
         Cursor cursor = context.getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
                 null,
                 ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
@@ -410,7 +411,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                             cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)));
                     break;
             }
-            writeToExternalStorage(this, logName, log);
+            writeToExternalStorage(this, confirmedFileName, log);
         }
     }
     /**
