@@ -1,7 +1,9 @@
 package com.babykangaroo.android.mylocationlibrary;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -9,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
@@ -25,9 +28,9 @@ import static android.content.Context.SENSOR_SERVICE;
  * Created by sport on 7/12/2017.
  */
 
-public class LocationAccess implements SensorEventListener{
+public abstract class LocationAccess extends Service implements SensorEventListener{
 
-    private Context mContext;
+    public Context mContext;
 
     /**
      * location service variables
@@ -37,6 +40,7 @@ public class LocationAccess implements SensorEventListener{
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 9999;
+    public static final String SERVICE_CHANNEL_ID = "GPSDataLogger";
 
     /**
      * variables for location aspects
@@ -67,6 +71,7 @@ public class LocationAccess implements SensorEventListener{
     private Sensor mSensorMagnetic;
     private double mBearingMagnetic = 0.0;
 
+
     /**
      * interface to perform action on location update
      */
@@ -81,11 +86,14 @@ public class LocationAccess implements SensorEventListener{
      * all location services are handled in this object and data can be called with the getter methods defined below
      * @param context of the instantiating activity
      */
+    public LocationAccess(){}
     public LocationAccess(Context context, @Nullable LocationUpdateListener locationUpdateListener){
         mContext = context;
         if (locationUpdateListener != null) {
             this.mLocationUpdateListener = locationUpdateListener;
         }
+
+
         /**
          * initiate the FusedLocationProviderClient that will provide the last known locations.
          */
@@ -161,7 +169,7 @@ public class LocationAccess implements SensorEventListener{
     /**
      * begin recieving location updates as defined by mLocationRequest
      */
-    public void startLocationUpdates() {
+    protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission( mContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationClient.requestLocationUpdates(mLocationRequest,
@@ -174,7 +182,7 @@ public class LocationAccess implements SensorEventListener{
      * stop updates
      */
 
-    public void stopUpdates(){
+    protected void stopUpdates(){
         mLocationClient.removeLocationUpdates(mLocationCallback);
     }
 

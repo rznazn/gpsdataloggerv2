@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,6 +24,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.PendingIntent;
+import android.app.Notification;
 
 import com.babykangaroo.android.mydatabaselibrary.ListContract;
 import com.babykangaroo.android.mylocationlibrary.LocationAccess;
@@ -62,7 +65,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     private Button msnSuccess;
     private Button msnFail;
 
-    private LocationAccess mLocationAccess;
+    private LocationService mLocationAccess;
     private Location mLastGivenLocation;
     private Context mContext;
     private DisTime disTime;
@@ -137,7 +140,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
         disTime = DisTime.getInstance();
         setSharedPreferences();
-        mLocationAccess = new LocationAccess(this, this);
+        mLocationAccess = new LocationService(this, this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         tvBearing = (TextView) findViewById(R.id.tv_bearing);
@@ -287,6 +290,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
          * Log point data at each location update to create a track of travel
          */
         if (!minimizedTracking && !isActive){
+//            mLocationAccess.stopForeground(true);
             mLocationAccess.stopUpdates();
             return;
         }
@@ -405,6 +409,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         }catch (NullPointerException e) {
 
         }
+
+
         mLocationAccess.startLocationUpdates();
     }
 
