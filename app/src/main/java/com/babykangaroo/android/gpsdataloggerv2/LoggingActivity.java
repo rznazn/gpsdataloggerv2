@@ -114,13 +114,12 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_logging);                           //***this is done twice, first here
+        setContentView(R.layout.activity_logging);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         /**disable screen TimeOut
          **/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_logging);                           //***second time here WHY???--leaving for now, will investigate if there's time
-
+        
         mContext = this;
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

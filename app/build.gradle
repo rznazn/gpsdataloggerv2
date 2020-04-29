@@ -6,6 +6,7 @@ android {
     defaultConfig {
         applicationId "com.babykangaroo.android.gpsdataloggerv2"
         minSdkVersion 19
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 25
         versionCode 3
         versionName "1.0"
