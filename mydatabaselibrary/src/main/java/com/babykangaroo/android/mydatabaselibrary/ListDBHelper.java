@@ -32,6 +32,7 @@ public class ListDBHelper extends SQLiteOpenHelper {
                 + ListContract.ListContractEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " TEXT NOT NULL, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD + " TEXT, "
+                + ListContract.ListContractEntry.COLUMN_EVENT_TYPE + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED + " TEXT DEFAULT 'FALSE', "
                 + ListContract.ListContractEntry.COLUMN_EVENT_TIME + " TEXT, "
                 + ListContract.ListContractEntry.COLUMN_TRACK_NUMBER + " TEXT, "

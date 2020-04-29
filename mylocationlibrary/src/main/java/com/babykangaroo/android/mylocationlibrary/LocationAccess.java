@@ -11,6 +11,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -137,9 +138,20 @@ public class LocationAccess implements SensorEventListener{
          * set the sensors and sensor manager
          */
         mSensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
-        mSensorGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            mSensorGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+        else
+        {
+            Toast.makeText(mContext, "No Accelerometer in this Phone", Toast.LENGTH_LONG).show();
+        }
 
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            mSensorMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        }
+        else {
+            Toast.makeText(mContext, "No Magnometer in this Phone", Toast.LENGTH_LONG).show();
+        }
         mSensorManager.registerListener(this, mSensorMagnetic,
                 SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorGravity,
@@ -180,9 +192,14 @@ public class LocationAccess implements SensorEventListener{
 
         SensorManager.getRotationMatrix(rotation, null, gravity, geomagnetic);
         SensorManager.getOrientation(rotation, orientation);
-        mBearingMagnetic = orientation[0];
-        mBearingMagnetic = Math.toDegrees(mBearingMagnetic);
-        mBearingMagnetic = Math.round(mBearingMagnetic);
+        double ori = 0;
+        ori = orientation[0];
+        double degrees = 0;
+        degrees = Math.toDegrees(ori);
+        double rounded = 0;
+        rounded = Math.round(degrees);
+
+        mBearingMagnetic = rounded;
 
         /**
          * adjust for declination

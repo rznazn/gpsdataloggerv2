@@ -34,6 +34,7 @@ public class ListContract {
 
         public static final String COLUMN_ITEM_PARENT_LIST = "parent_list";
         public static final String COLUMN_EVENT_KEYWORD = "keyword";
+        public static final String COLUMN_EVENT_TYPE = "user_action";
         public static final String COLUMN_EVENT_WAS_CANCELLED = "was_cancelled";
         public static final String COLUMN_EVENT_TIME = "event_time";
         public static final String COLUMN_TRACK_NUMBER = "track_number";
@@ -45,7 +46,7 @@ public class ListContract {
         public static final String COLUMN_EVENT_BEARING_MAG = "bearing_magnetic";
         public static final String COLUMN_EVENT_BEARING_FROM_LAST = "bearing_from_last";
         public static final String COLUMN_EVENT_RANGE = "event_range";
-        public static final String COLUMN_EVENT_END_TIME = "event_end_time";
+        public static final String COLUMN_EVENT_END_TIME = "end_time";
         public static final String COLUMN_GPS_ACCURACY = "gps_accuracy";
         public static final String COLUMN_SPEED_FROM_LAST = "gps_speed";
         public static final String COLUMN_ITEM_NOTE = "note";

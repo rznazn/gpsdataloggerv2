@@ -12,7 +12,7 @@
         android:visibility="invisible">
     <com.wang.avi.AVLoadingIndicatorView
         android:layout_gravity="center"
-        app:indicatorColor="@color/colorAccent"
+        app:indicatorColor="@color/colorAccentAD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:indicatorName="BallPulseIndicator"/>
@@ -26,7 +26,7 @@
     </FrameLayout>
 <LinearLayout
     android:id="@+id/ll_main_content"
-    android:padding="@dimen/default_padding_size"
+    android:padding="@dimen/dflt_pad_sz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -41,14 +41,14 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textColorHint="@color/colorAccent"
-            android:textSize="@dimen/default_text_size"
+            android:textColorHint="@color/colorAccentAD"
+            android:textSize="@dimen/dflt_txt_sz"
             android:hint="new log name" />
 
         <ImageView
             android:id="@+id/iv_add_new_entry"
-            android:layout_width="@dimen/icon_view_size"
-            android:layout_height="@dimen/icon_view_size"
+            android:layout_width="@dimen/icon_vw_sz"
+            android:layout_height="@dimen/icon_vw_sz"
             android:layout_gravity="center"
             android:src="@mipmap/ic_launcher_round"/>
 
@@ -64,7 +64,7 @@
         android:layout_height="40dp"
         android:gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/default_text_size"
+        android:textSize="@dimen/dflt_txt_sz"
         android:background="@android:color/darker_gray"
         android:text="Admin Settings"/>
     <LinearLayout
@@ -75,7 +75,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="track id:"/>
         <TextView
             android:id="@+id/tv_track_id"
@@ -84,7 +84,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical|end"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="Set Track ID"/>
     </LinearLayout>
     <LinearLayout
@@ -95,7 +95,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="Log Interval:"/>
         <TextView
             android:id="@+id/tv_log_interval"
@@ -104,7 +104,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical|end"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="Set Logging Interval"/>
     </LinearLayout>
     <LinearLayout
@@ -119,7 +119,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="udp ip:"/>
             <TextView
                 android:id="@+id/tv_ip_address"
@@ -128,7 +128,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical|end"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/dflt_txt_sz"
                 android:text="Set Destination Ip:"/>
             </LinearLayout>
         <LinearLayout
@@ -139,7 +139,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/dflt_txt_sz"
                 android:text="udp port:"/>
             <TextView
                 android:id="@+id/tv_port"
@@ -148,7 +148,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical|end"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/dflt_txt_sz"
                 android:text="Set Destination Port"/>
         </LinearLayout>
         <LinearLayout
@@ -160,7 +160,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/dflt_txt_sz"
                 android:text="Send Live Updates:"/>
             <Switch
                 android:id="@+id/sw_live_tracking"
@@ -176,7 +176,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/dflt_txt_sz"
                 android:text="Track if minimized:"/>
         <Switch
             android:id="@+id/sw_minimized_tracking"
@@ -192,7 +192,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="admin password:"/>
         <TextView
             android:id="@+id/tv_admin_password"
@@ -201,7 +201,7 @@
             android:layout_height="40dp"
             android:gravity="center_vertical|end"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size"
+            android:textSize="@dimen/dflt_txt_sz"
             android:text="Set Admin Password"/>
     </LinearLayout>
 

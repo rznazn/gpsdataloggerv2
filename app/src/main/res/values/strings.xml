@@ -12,4 +12,16 @@
     <string name="track_id">trackId</string>
     <string name="default_track_id">999</string>
     <string name="log_interval">logInterval</string>
+    <string name="log_name_here">Name of current log</string>
+    <string name="bear_dflt">bearing goes here</string>
+    <string name="enter_note">ENTER NOTE</string>
+    <string name="edit_log">EDIT LOG</string>
+    <string name="target_id">TARGET IDENTIFIED</string>
+    <string name="engage_start">ENGAGE START</string>
+    <string name="engage_stop">ENGAGE STOP</string>
+    <string name="single_shot">SHOT FIRED</string>
+    <string name="result_fail">ENGAGE \nFAIL</string>
+    <string name="result_success">ENGAGE SUCCESS</string>
+    <string name="setting_gear">Settings Gear</string>
+    <string name="bearing_arrow">Bearing Arrow</string>
 </resources>
