@@ -17,8 +17,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -119,7 +121,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         /**disable screen TimeOut
          **/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        
+
         mContext = this;
         tvCurrentLogName = (TextView) findViewById(R.id.tv_current_log_name);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -197,6 +199,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
                     if (!enemyEngaged) {
                         enemyEngaged = true;
+
+                        
+                        ivAdminSettings.setClickable(false);
                         engageButton.setText(R.string.engage_stop);
                         engageButton.setBackgroundColor(getResources().getColor(R.color.colorAccentEngStop));
 
@@ -224,6 +229,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                     }
                     else if (enemyEngaged) {
                         enemyEngaged = false;
+                        ivAdminSettings.setClickable(true);
                         engageButton.setText(R.string.engage_start);
                         engageButton.setBackgroundColor(getResources().getColor(R.color.colorAccentEngStrt));
 
@@ -476,8 +482,8 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             }
 
             long gpsTime = gpsCorrectedTime;
-            if (gpsTime > 0 && gpsTime < 1546300800000L)
-            {
+
+            if (gpsTime > 0 && gpsTime < 1546300800000L) {
                 gpsTime += 619315200000L;
             }
 
@@ -821,6 +827,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         final TextView tvMessage = (TextView) adView.findViewById(R.id.tv_event_summary);
         tvMessage.setText("Enter Password");
         final EditText etPassword = (EditText) adView.findViewById(R.id.et_event_note);
+
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(adView);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -829,19 +838,43 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
 
             }
         });
+
         builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String password = etPassword.getText().toString();
-                if (password.equals("GeneRocks"  ) || password.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)))){
-                    mLocationAccess.stopUpdates();
-                    Intent intent = new Intent(mContext, FileManagerActivity.class);
-                    startActivity(intent);
+                // update to shared password validation method
+                // if (password.equals("GeneRocks"  ) || password.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password)))){
+                //    mLocationAccess.stopUpdates();
+                //    Intent intent = new Intent(mContext, FileManagerActivity.class);
+                //    startActivity(intent);
+                if (validatePassword(password)) {
+                    openFileAdmin();
+                } else {
+                    Toast.makeText(mContext, "Invalid password", Toast.LENGTH_LONG).show();
                 }
             }
         });
-        AlertDialog alertDialog = builder.create();
+
+        final AlertDialog alertDialog = builder.create();
         alertDialog.show();
+
+        // Password dialog listeners moved to allow hiding of alertDialog
+        // Allow users to enter password with built-in DONE button
+        etPassword.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (validatePassword(etPassword.getText().toString())) {
+                        openFileAdmin();
+                        alertDialog.hide();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
     void setSharedPreferences(){
@@ -864,5 +897,15 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
     @Override
     public void onBackPressed() {
         //do nothing
+    }
+
+    private boolean validatePassword(String pass) {
+        return (pass.equals("GeneRocks") || pass.equals(sharedPreferences.getString(getString(R.string.admin_password), getString(R.string.default_admin_password))));
+    }
+
+    private void openFileAdmin() {
+        mLocationAccess.stopUpdates();
+        Intent intent = new Intent(mContext, FileManagerActivity.class);
+        startActivity(intent);
     }
 }

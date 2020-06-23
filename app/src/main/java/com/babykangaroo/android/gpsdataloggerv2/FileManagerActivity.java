@@ -23,8 +23,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -75,6 +78,18 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         loadingIndicatorView = (FrameLayout) findViewById(R.id.cp_loading);
         mainContent = (LinearLayout) findViewById(R.id.ll_main_content);
         etNewEntry = (EditText) findViewById(R.id.et_new_list);
+        // Allow addition of new log through the DONE input - Carte - Jun 2020
+        etNewEntry.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    createNewLog();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         rvLogList = (RecyclerView) findViewById(R.id.rv_list_directory);
         mAdapter = new MyCursorAdapter(this, this, sharedPreferences);
         rvLogList.setAdapter(mAdapter);
@@ -85,17 +100,23 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         ivEnterNewEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* Created separate createNewLog() function to share functionality with the built-in DONE input
                 String itemName = etNewEntry.getText().toString();
                 if (!itemName.matches("") && !itemName.contains("/")) {
                     ContentValues cv = new ContentValues();
                     cv.put(ListContract.ListContractEntry.COLUMN_LOG_NAME, itemName);
                     Uri uri = getContentResolver().insert(ListContract.ListContractEntry.DIRECTORY_CONTENT_URI, cv);
                     etNewEntry.setText("");
+
+                    // once the new entry is added, close the keyboard
+                    closeKeyboard();
                 } else {
                     Toast toast = Toast.makeText(context, "invalid log name", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP,0 ,0);
                     toast.show();
                 }
+                // */
+                createNewLog();
             }
         });
 
@@ -544,4 +565,34 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
         mainContent.setVisibility(View.VISIBLE);
     }
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void createNewLog() {
+        String itemName = etNewEntry.getText().toString();
+        if (!itemName.matches("") && !itemName.contains("/")) {
+            ContentValues cv = new ContentValues();
+            cv.put(ListContract.ListContractEntry.COLUMN_LOG_NAME, itemName);
+            Uri uri = getContentResolver().insert(ListContract.ListContractEntry.DIRECTORY_CONTENT_URI, cv);
+            etNewEntry.setText("");
+
+            // once the new entry is added, close the keyboard
+            closeKeyboard();
+
+            Toast toast = Toast.makeText(context, "New log created", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM,0 ,0);
+            toast.show();
+
+            return;
+        }
+        Toast toast = Toast.makeText(context, "invalid log name", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0 ,0);
+        toast.show();
+    }
 }

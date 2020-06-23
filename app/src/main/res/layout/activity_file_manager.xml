@@ -43,7 +43,8 @@
             android:textColor="@android:color/black"
             android:textColorHint="@color/colorAccentAD"
             android:textSize="@dimen/dflt_txt_sz"
-            android:hint="new log name" />
+            android:hint="new log name"
+            android:inputType="text" />
 
         <ImageView
             android:id="@+id/iv_add_new_entry"
