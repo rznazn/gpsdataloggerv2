@@ -77,7 +77,7 @@ public class MyCursorAdapter extends RecyclerView.Adapter<MyCursorAdapter.ItemVi
         final String itemName1 = mCursor.getString(mCursor.
                 getColumnIndex(ListContract.ListContractEntry.COLUMN_LOG_NAME));
         if (itemName1.equals(mSharedPreferences.getString(mContext.getString(R.string.current_log), "default"))){
-            holder.tvLogName.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+            holder.tvLogName.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccentAD));
         }else{
             holder.tvLogName.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
         }

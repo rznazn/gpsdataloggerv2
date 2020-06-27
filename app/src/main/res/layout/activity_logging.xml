@@ -14,81 +14,151 @@
     <TextView
         android:id="@+id/tv_current_log_name"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/icon_view_size"
+        android:layout_height="@dimen/icon_vw_sz"
         android:gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/default_text_size"
-        tools:text="Name of current Log" />
+        android:textSize="@dimen/dflt_txt_sz"
+        tools:text="@string/log_name_here" />
 
         <ImageView
             android:id="@+id/iv_settings"
-            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_name"/>
-</FrameLayout>
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/setting_gear"
+            android:src="@drawable/ic_action_name" />
+    </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/black" />
 
-
     <TextView
         android:id="@+id/tv_bearing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/default_padding_size"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="bearing goes here"
+        android:text="@string/bear_dflt"
         android:textColor="@android:color/black"
         android:textSize="28sp" />
 
     <ImageView
-        android:id="@+id/iv_log_event"
-        android:layout_width="@dimen/bearing_button_height"
-        android:layout_height="@dimen/bearing_button_height"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/default_padding_size"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/bearing_arrow"
         android:gravity="center"
-        android:src="@drawable/line_bearing_icon" />
+        app:srcCompat="@drawable/ic_navigation_black_24dp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="42dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_log_note"
-            android:layout_width="@dimen/default_button_height"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_width="118dp"
+            android:layout_height="50dp"
+            android:background="@color/colorAccentNote"
+            android:gravity="center"
+            android:text="@string/enter_note"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dflt_txt_sz"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/tv_edit_log"
-            android:layout_margin="12dp"
-            android:layout_marginTop="@dimen/default_padding_size"
-            android:background="@android:color/holo_red_light"
-            android:gravity="center"
-            android:text="enter note"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size" />
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_edit_log"
-            android:layout_width="@dimen/default_button_height"
-            android:layout_height="@dimen/default_button_height"
+            android:layout_width="118dp"
+            android:layout_height="50dp"
+            android:background="@color/colorAccentEdit"
+            android:gravity="center"
+            android:text="@string/edit_log"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dflt_txt_sz"
             app:layout_constraintLeft_toRightOf="@id/tv_log_note"
             app:layout_constraintRight_toLeftOf="parent"
-            android:layout_centerInParent="true"
-            android:layout_margin="12dp"
-            android:layout_marginTop="@dimen/default_padding_size"
-            android:background="@android:color/holo_orange_light"
-            android:gravity="center"
-            android:text="edit\nlog"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btnTgtId"
+        android:layout_width="236dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@color/colorAccentTgt"
+        android:text="@string/target_id"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        tools:text="@string/target_id" />
+
+    <Button
+        android:id="@+id/btnEngage"
+        android:layout_width="236dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@color/colorAccentEngStrt"
+        android:text="@string/engage_start"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnOneShot"
+        android:layout_width="236dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@color/colorAccentShot"
+        android:text="@string/single_shot"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/success"
+            android:layout_width="118dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorAccentSuccess"
+            android:text="@string/result_success"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/default_text_size" />
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/failure"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/failure"
+            android:layout_width="118dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorAccentFailure"
+            android:text="@string/result_fail"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toRightOf="@id/success"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

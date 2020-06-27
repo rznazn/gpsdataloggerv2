@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="icon_view_size">43dp</dimen>
-    <dimen name="default_text_size">18sp</dimen>
-    <dimen name="default_padding_size">8dp</dimen>
-    <dimen name="default_button_height">60dp</dimen>
-    <dimen name="bearing_button_height">200dp</dimen>
-    <dimen name="default_elevation">6dp</dimen>
+    <dimen name="icon_vw_sz">43dp</dimen>
+    <dimen name="dflt_txt_sz">18sp</dimen>
+    <dimen name="dflt_pad_sz">10dp</dimen>
+    <dimen name="dflt_btn_hgt">60dp</dimen>
+    <dimen name="bear_btn_hgt">200dp</dimen>
+    <dimen name="dflt_elevatn">6dp</dimen>
 </resources>

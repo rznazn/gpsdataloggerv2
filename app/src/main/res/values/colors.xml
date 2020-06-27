@@ -2,5 +2,13 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccentAD">#49F9E4</color>
+    <color name="colorAccentNote">#FFFF00</color>
+    <color name="colorAccentTgt">#0000FF</color>
+    <color name="colorAccentEngStrt">#00FF00</color>
+    <color name="colorAccentShot">#FF0000</color>
+    <color name="colorAccentEdit">#FFA500</color>
+    <color name="colorAccentEngStop">#006400</color>
+    <color name="colorAccentSuccess">#FFAA</color>
+    <color name="colorAccentFailure">#006660</color>
 </resources>

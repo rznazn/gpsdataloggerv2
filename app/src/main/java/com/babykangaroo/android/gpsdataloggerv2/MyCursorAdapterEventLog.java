@@ -71,7 +71,8 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
     @Override
     public void onBindViewHolder(MyCursorAdapterEventLog.ItemViewHolder holder, int position) {
         if (mCursor.moveToPosition(position)) {
-            String eventSummary = mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)) + "\nBearing: "
+            String eventSummary = mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)) + "\nEvent Type: "
+                    + mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TYPE)) + "\nBearing: "
                     + mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)) + "\nLat: "
                     + mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)) + "\nLong:"
                     + mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE));
@@ -81,10 +82,10 @@ public class MyCursorAdapterEventLog extends RecyclerView.Adapter<MyCursorAdapte
             String note = mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_ITEM_NOTE));
             if (mCursor.getString(mCursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_WAS_CANCELLED)).equals("TRUE")){
                 if (!note.contains("*cancelled*")){
-                    note = "*cancelled*" + note;
+                    note = "*cancelled* " + note;
                 }
             }else  if (!note.contains("*confirmed*")){
-                note = "*confirmed*" + note;
+                note = "*confirmed* " + note;
             }
 
             holder.tvNote.setText(note);
