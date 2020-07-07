@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="gpsdataloggerv24Nov19/app" />
-      <module fileurl="file://$PROJECT_DIR$/gpsdataloggerv24Nov19.iml" filepath="$PROJECT_DIR$/gpsdataloggerv24Nov19.iml" group="gpsdataloggerv24Nov19" />
-      <module fileurl="file://$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" filepath="$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" group="gpsdataloggerv24Nov19/mydatabaselibrary" />
-      <module fileurl="file://$PROJECT_DIR$/mylocationlibrary/mylocationlibrary.iml" filepath="$PROJECT_DIR$/mylocationlibrary/mylocationlibrary.iml" group="gpsdataloggerv24Nov19/mylocationlibrary" />
-      <module fileurl="file://$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" filepath="$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" group="gpsdataloggerv24Nov19/wamformaterlib" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="gpsdataloggerv2/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gpsdataloggerv2.iml" filepath="$PROJECT_DIR$/.idea/modules/gpsdataloggerv2.iml" group="gpsdataloggerv2" />
+      <module fileurl="file://$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" filepath="$PROJECT_DIR$/mydatabaselibrary/mydatabaselibrary.iml" group="gpsdataloggerv2/mydatabaselibrary" />
+      <module fileurl="file://$PROJECT_DIR$/mylocationlibrary/mylocationlibrary.iml" filepath="$PROJECT_DIR$/mylocationlibrary/mylocationlibrary.iml" group="gpsdataloggerv2/mylocationlibrary" />
+      <module fileurl="file://$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" filepath="$PROJECT_DIR$/wamformaterlib/wamformaterlib.iml" group="gpsdataloggerv2/wamformaterlib" />
     </modules>
   </component>
 </project>

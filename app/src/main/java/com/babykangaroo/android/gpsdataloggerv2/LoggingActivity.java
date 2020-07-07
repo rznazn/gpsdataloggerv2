@@ -167,7 +167,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tvLogNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(1,mLastGivenLocation, System.currentTimeMillis()-mTimeCorrection,null);
+                // Removing mTimeCorrection. UTC given with System.currentTimeMillis() call
+                // logEvent(1,mLastGivenLocation, System.currentTimeMillis()-mTimeCorrection,null);
+                logEvent(1,mLastGivenLocation, System.currentTimeMillis(),null);
             }
         });
 
@@ -175,7 +177,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         tgtButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(2, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                // Removing mTimeCorrection. UTC given with System.currentTimeMillis() call
+                // logEvent(2, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                logEvent(2, mLastGivenLocation, System.currentTimeMillis(), mBearingMagnetic);
             }
         });
 
@@ -185,15 +189,26 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
             @Override
             public void onClick(View v) {
                 //logEvent(3, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
-                long gpsTime = lastUpdate - mTimeCorrection;
-                if (gpsTime > 0 && gpsTime < 1546300800000L) //there is a bug in the gps date where the week beyond April 6, 2019 is not recognized; this code attempts to correct that issue
-                {
-                    gpsTime += 619315200000L;
-                }
+
+                // Attempting to correct gpsTime issue using device system time. - Carte July 2020
+                // long gpsTime = lastUpdate - mTimeCorrection;
+                // if (gpsTime > 0 && gpsTime < 1546300800000L) //there is a bug in the gps date where the week beyond April 6, 2019 is not recognized; this code attempts to correct that issue
+                // {
+                //    gpsTime += 619315200000L;
+                // }
+
+                // Use current system time (based off epoch).
+                // As long as good gps signal (required for events), current system time should be good.
+                // NOTE: Initial test give correct UTC on WAM Output - Carte Jul 2020
+                // TODO - Extra testing required
+                long gpsTime = System.currentTimeMillis();
+
                 final String eventTime = dateFormat.format(new Date(gpsTime));
                 final String eventTimeEnd = dateFormat.format(new Date((gpsTime) + 10000));
 
-                if(mLastGivenLocation != null){
+
+
+                if(mLastGivenLocation != null) {
                     Location location;
                     location = mLastGivenLocation;
 
@@ -226,7 +241,7 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);
                         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                         getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                    }
+                    } // end if (!enemyEngaged)
                     else if (enemyEngaged) {
                         enemyEngaged = false;
                         ivAdminSettings.setClickable(true);
@@ -254,18 +269,21 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
                         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME, eventTimeEnd);   //was eventTimeEnd
                         contentValues.put(ListContract.ListContractEntry.COLUMN_SPEED_FROM_LAST, location.getSpeed());
                         getContentResolver().insert(ListContract.ListContractEntry.ITEMS_CONTENT_URI, contentValues);
-                    }
-                } else { //location is invalid
+                    } // end else if (enemyEngaged)
+                } // end if(mLastGivenLocation != null)
+                else { //location is invalid
                 Toast.makeText(mContext, "GPS not acquired", Toast.LENGTH_LONG).show();
                 }
-            }
+            } // end onClick
         });
 
         oneShotButton = (Button) findViewById(R.id.btnOneShot);
         oneShotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(3, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                // Removing mTimeCorrection. UTC given with System.currentTimeMillis() call
+                // logEvent(3, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                logEvent(3, mLastGivenLocation, System.currentTimeMillis(), mBearingMagnetic);
             }
         });
 
@@ -273,7 +291,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         msnSuccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(4, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                // Removing mTimeCorrection. UTC given with System.currentTimeMillis() call
+                // logEvent(4, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                logEvent(4, mLastGivenLocation, System.currentTimeMillis(), mBearingMagnetic);
             }
         });
 
@@ -281,7 +301,9 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         msnFail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logEvent(5, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                // Removing mTimeCorrection. UTC given with System.currentTimeMillis() call
+                // logEvent(5, mLastGivenLocation, System.currentTimeMillis() - mTimeCorrection, mBearingMagnetic);
+                logEvent(5, mLastGivenLocation, System.currentTimeMillis(), mBearingMagnetic);
             }
         });
 
@@ -304,15 +326,21 @@ public class LoggingActivity extends AppCompatActivity implements LocationAccess
         mTimeCorrection = mLocationAccess.getmGPSTimeOffset();
         if (lastUpdate+(loggingInterval*1000)> System.currentTimeMillis()){return;}
         lastUpdate = System.currentTimeMillis();
-        long gpsTime = lastUpdate - mTimeCorrection;   //was just location.getTime(); so the point records were not getting millis
-        if (gpsTime > 0 && gpsTime < 1546300800000L)
-        {
-            gpsTime += 619315200000L;
-        }
+
+        // Attempting to correct gpsTime issue using device system time. - Carte July 2020
+        //long gpsTime = lastUpdate - mTimeCorrection;   //was just location.getTime(); so the point records were not getting millis
+        //if (gpsTime > 0 && gpsTime < 1546300800000L)
+        //{
+        //    gpsTime += 619315200000L;
+        //}
+
+
         String eventTime;
         String eventTimeEnd;
-        eventTime = dateFormat.format(new Date(gpsTime));
-        eventTimeEnd = dateFormat.format(new Date(gpsTime + 10000));
+        // eventTime = dateFormat.format(new Date(gpsTime));
+        // eventTimeEnd = dateFormat.format(new Date(gpsTime + 10000));
+        eventTime = dateFormat.format(new Date(lastUpdate));
+        eventTimeEnd = dateFormat.format(new Date(lastUpdate + 10000));
         ContentValues contentValues = new ContentValues();
         contentValues.put(ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST, mCurrentLog);
         contentValues.put(ListContract.ListContractEntry.COLUMN_EVENT_KEYWORD, "POINT");

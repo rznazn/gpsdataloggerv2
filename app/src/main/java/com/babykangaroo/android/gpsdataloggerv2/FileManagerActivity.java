@@ -446,8 +446,8 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
 
         writeToExternalStorage(this, logName, log, fileType);
     }
-    void exportToWam(String logName){
-        String fileType = "_WAM";
+    void exportToWam(String logName) {
+        String fileType = ".txt";
         Cursor cursor = context.getContentResolver().query(ListContract.ListContractEntry.ITEMS_CONTENT_URI,
                 null,
                 ListContract.ListContractEntry.COLUMN_ITEM_PARENT_LIST + " = ? ",
@@ -472,15 +472,15 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
                         }
 
                         //if (note.contains("*confirmed*")) {  //this worked here, but not in the Point switch case, commenting out for now
-                            log = WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)),
-                                    note,
-                                    cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE)));
+                        log = WamFormater.formatAction(cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_TIME)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_END_TIME)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_TRACK_NUMBER)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_BEARING_MAG)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LATITUDE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_LONGITUDE)),
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_ALTITUDE)),
+                                note,
+                                cursor.getString(cursor.getColumnIndex(ListContract.ListContractEntry.COLUMN_EVENT_DIRECTIVE)));
                         //}
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -496,9 +496,11 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
 
                     break;
             }
-            writeToExternalStorage(this, logName, log, fileType);
+            String writeLogName = logName + "_WAM";
+            // writeToExternalStorage(this, logName, log, fileType);
+            writeToExternalStorage(this, writeLogName, log, fileType);
         }
-    }
+    } // end exportToWam
     /**
      * write current readings to file
      */
@@ -521,7 +523,7 @@ public class FileManagerActivity extends AppCompatActivity implements MyCursorAd
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            File log = new File(dir, filename + fileType + ".txt");
+            File log = new File(dir, filename + fileType);
 
             try {
                     fos = new FileOutputStream(log, true);
